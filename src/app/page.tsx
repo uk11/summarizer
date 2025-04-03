@@ -1,3 +1,9 @@
+import HomeClient from '@/components/pages/HomeClient';
+
 export default function Home() {
-  return <div className='text-[red]'>asd</div>;
+  return (
+    <main className=''>
+      <HomeClient />
+    </main>
+  );
 }
