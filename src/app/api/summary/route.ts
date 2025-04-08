@@ -3,6 +3,7 @@ import OpenAI from 'openai';
 import path from 'path';
 import * as mammoth from 'mammoth';
 import pdfParse from 'pdf-parse';
+import { db } from '@/lib/prisma';
 
 const openai = new OpenAI({
   apiKey: process.env.OPENAI_API_KEY,
@@ -11,7 +12,7 @@ const openai = new OpenAI({
 export async function POST(req: NextRequest) {
   const formData = await req.formData();
   const file = formData.get('file');
-  console.log(file);
+
   if (!(file instanceof File)) {
     return NextResponse.json(
       { error: '유효한 파일이 아닙니다.' },
@@ -20,15 +21,18 @@ export async function POST(req: NextRequest) {
   }
 
   try {
-    // 확장자에 따라 텍스트 추출
-    const content = await extractTextFromFile(file);
+    const content = await extractText(file);
+    const summary = await getSummarizeText(content);
 
-    // 요약 요청
-    const summary = await summarizeTextWithGPT(content);
+    const saved = await db.summary.create({
+      data: {
+        content: summary,
+      },
+    });
 
-    return NextResponse.json({ summary });
+    return NextResponse.json({ id: saved.id });
   } catch (error) {
-    const err = error as Error; // Error 객체로 단언
+    const err = error as Error;
     console.error('[SUMMARY_ERROR]', error);
     return NextResponse.json(
       { error: err.message ?? '요약 처리 중 오류가 발생했습니다.' },
@@ -38,7 +42,7 @@ export async function POST(req: NextRequest) {
 }
 
 // 파일 확장자별 텍스트 추출
-async function extractTextFromFile(file: File): Promise<string> {
+async function extractText(file: File): Promise<string> {
   const buffer = Buffer.from(await file.arrayBuffer());
   const ext = path.extname(file.name).toLowerCase();
 
@@ -62,7 +66,7 @@ async function extractTextFromFile(file: File): Promise<string> {
 }
 
 // GPT 요약 요청
-async function summarizeTextWithGPT(text: string): Promise<string> {
+async function getSummarizeText(text: string): Promise<string> {
   const completion = await openai.chat.completions.create({
     model: 'gpt-3.5-turbo',
     // model: 'gpt-4-turbo',

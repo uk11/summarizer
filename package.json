@@ -11,6 +11,7 @@
   "dependencies": {
     "@prisma/client": "^6.5.0",
     "@tanstack/react-query": "^5.71.3",
+    "clsx": "^2.1.1",
     "mammoth": "^1.9.0",
     "next": "15.2.4",
     "openai": "^4.91.1",

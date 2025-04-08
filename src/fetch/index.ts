@@ -7,7 +7,7 @@ export const uploadAndSummary = async (file: File) => {
     body: formData,
   });
 
-  if (!res.ok) throw new Error('요약 실패');
+  if (!res.ok) throw new Error('요약 요청 실패');
 
   return res.json();
 };
