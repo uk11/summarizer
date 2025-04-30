@@ -17,6 +17,7 @@ export default async function RootLayout({
   children: React.ReactNode;
 }>) {
   const summaries = await db.summary.findMany();
+
   return (
     <html lang='en' className='h-full'>
       <body className='h-full'>

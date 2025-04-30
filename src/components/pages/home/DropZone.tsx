@@ -14,6 +14,7 @@ const Dropzone = () => {
     mutationFn: uploadAndSummary,
     onSuccess: (data) => {
       router.push(`/result/${data.id}`);
+      router.refresh();
     },
   });
 
