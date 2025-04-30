@@ -12,10 +12,18 @@ const openai = new OpenAI({
 export async function POST(req: NextRequest) {
   const formData = await req.formData();
   const file = formData.get('file');
+  const fileName = formData.get('fileName')?.toString();
 
   if (!(file instanceof File)) {
     return NextResponse.json(
       { error: '유효한 파일이 아닙니다.' },
+      { status: 400 }
+    );
+  }
+
+  if (!fileName) {
+    return NextResponse.json(
+      { error: '파일명이 누락되었습니다.' },
       { status: 400 }
     );
   }
@@ -27,13 +35,13 @@ export async function POST(req: NextRequest) {
     const saved = await db.summary.create({
       data: {
         content: summary,
+        fileName,
       },
     });
 
     return NextResponse.json({ id: saved.id });
   } catch (error) {
     const err = error as Error;
-    console.error('[SUMMARY_ERROR]', error);
     return NextResponse.json(
       { error: err.message ?? '요약 처리 중 오류가 발생했습니다.' },
       { status: 500 }

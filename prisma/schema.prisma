@@ -10,6 +10,7 @@ datasource db {
 model Summary {
   id        String   @id @default(uuid())
   content   String
+  fileName  String  
   createdAt DateTime @default(now())
 }
 
