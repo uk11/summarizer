@@ -32,6 +32,13 @@ export default function LoginModal({
         >
           Google 계정으로 계속하기
         </button>
+
+        <button
+          className='w-full border px-[10px] py-[8px] rounded-[10px] cursor-pointer'
+          onClick={() => signIn('kakao')}
+        >
+          Kakao 계정으로 계속하기
+        </button>
       </div>
     </div>,
     document.body

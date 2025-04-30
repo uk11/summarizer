@@ -34,7 +34,7 @@ export default function LogoutModal({
           </button>
         </div>
         <div className='flex justify-between w-full'>
-          <span>{session?.user.email}</span>
+          <span>{session?.user.email || session?.user.name}</span>
           <button
             className='rounded px-3 py-1 border text-gray-600 hover:bg-gray-100 cursor-pointer'
             onClick={handleLogout}
