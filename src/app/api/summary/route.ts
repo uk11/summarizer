@@ -4,6 +4,8 @@ import path from 'path';
 import * as mammoth from 'mammoth';
 import pdfParse from 'pdf-parse';
 import { db } from '@/lib/prisma';
+import { getServerSession } from 'next-auth';
+import { authOptions } from '../auth/[...nextauth]/route';
 
 const openai = new OpenAI({
   apiKey: process.env.OPENAI_API_KEY,
@@ -32,10 +34,14 @@ export async function POST(req: NextRequest) {
     const content = await extractText(file);
     const summary = await getSummarizeText(content);
 
+    const session = await getServerSession(authOptions);
+    const userId = session?.user?.id ?? null;
+
     const saved = await db.summary.create({
       data: {
         content: summary,
         fileName,
+        ...(userId && { userId }),
       },
     });
 
