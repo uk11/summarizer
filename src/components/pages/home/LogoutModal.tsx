@@ -16,7 +16,7 @@ export default function LogoutModal({
 
   const handleLogout = () => {
     handleLogoutModalClick();
-    signOut({ redirect: false });
+    signOut({ callbackUrl: '/' });
   };
 
   if (!isLogoutModalOpen) return null;
