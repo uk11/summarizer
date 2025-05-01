@@ -1,0 +1,21 @@
+import { authOptions } from '@/app/api/auth/[...nextauth]/route';
+import type { Summary } from '@prisma/client';
+import { getServerSession } from 'next-auth';
+import { getAnonymousId } from './auth';
+import { db } from './prisma';
+
+export async function getSummaries(): Promise<Summary[]> {
+  const session = await getServerSession(authOptions);
+
+  if (session?.user?.id) {
+    return db.summary.findMany({ where: { userId: session.user.id } });
+  }
+
+  const anonymousId = await getAnonymousId();
+
+  if (anonymousId) {
+    return db.summary.findMany({ where: { anonymousId } });
+  }
+
+  return [];
+}
