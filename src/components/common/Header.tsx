@@ -25,32 +25,35 @@ export default function Header() {
   };
 
   return (
-    <header className='h-[60px] flex items-center justify-between px-5 border-b bg-white sticky top-0'>
+    <header className='h-[60px] flex items-center justify-between px-[16px] border-b bg-white sticky top-0'>
       <div className='flex gap-[16px]'>
         {!isSidebarOpen && (
-          <button onClick={() => setIsSidebarOpen(!isSidebarOpen)}>
-            <RiMenu3Fill className='w-[20px] h-[20px]' />
+          <button
+            className='p-1 hover:bg-gray-200 hover:rounded-[6px]'
+            onClick={() => setIsSidebarOpen(!isSidebarOpen)}
+          >
+            <RiMenu3Fill className='w-[24px] h-[24px]' />
           </button>
         )}
-        <Link href='/' className='text-[20px] font-bold text-gray-800'>
+        <Link href='/' className='text-[20px] font-bold'>
           Summarizer
         </Link>
       </div>
 
       {status === 'loading' ? (
-        <div className='w-[30px] h-[30px] rounded-full bg-gray-200 animate-pulse' />
+        <div className='w-[34px] h-[34px] rounded-full bg-gray-200 animate-pulse mr-[4px]' />
       ) : status === 'authenticated' ? (
         <Image
           src={session.user.image!}
           alt='프로필 이미지'
-          width={30}
-          height={30}
+          width={34}
+          height={34}
           onClick={handleLogoutModalClick}
-          className='rounded-full cursor-pointer'
+          className='rounded-full cursor-pointer mr-[4px]'
         />
       ) : (
         <button
-          className='rounded px-3 py-1 border text-gray-600 hover:bg-gray-100 cursor-pointer'
+          className='rounded px-3 py-1 border text-gray-600 hover:bg-gray-100 cursor-pointer mr-[4px]'
           onClick={handleLoginModalClick}
         >
           로그인
