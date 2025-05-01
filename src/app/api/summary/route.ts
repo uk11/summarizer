@@ -6,6 +6,8 @@ import pdfParse from 'pdf-parse';
 import { db } from '@/lib/prisma';
 import { getServerSession } from 'next-auth';
 import { authOptions } from '../auth/[...nextauth]/route';
+import { cookies } from 'next/headers';
+import { v4 as uuidv4 } from 'uuid';
 
 const openai = new OpenAI({
   apiKey: process.env.OPENAI_API_KEY,
@@ -32,18 +34,30 @@ export async function POST(req: NextRequest) {
 
   try {
     const content = await extractText(file);
-    const summary = await getSummarizeText(content);
-
+    const summary = await SummarizeText(content);
     const session = await getServerSession(authOptions);
-    const userId = session?.user?.id ?? null;
+    const userId = session?.user?.id;
 
-    const saved = await db.summary.create({
-      data: {
-        content: summary,
-        fileName,
-        ...(userId && { userId }),
-      },
-    });
+    const cookieStore = await cookies();
+    let anonymousId = cookieStore.get('anonymousId')?.value;
+
+    if (!userId && !anonymousId) {
+      anonymousId = uuidv4();
+      cookieStore.set({
+        name: 'anonymousId',
+        value: anonymousId,
+        path: '/',
+        maxAge: 60 * 60 * 24 * 30,
+      });
+    }
+
+    const data = {
+      content: summary,
+      fileName,
+      ...(userId ? { userId } : { anonymousId }),
+    };
+
+    const saved = await db.summary.create({ data });
 
     return NextResponse.json({ id: saved.id });
   } catch (error) {
@@ -80,7 +94,7 @@ async function extractText(file: File): Promise<string> {
 }
 
 // GPT 요약 요청
-async function getSummarizeText(text: string): Promise<string> {
+async function SummarizeText(text: string): Promise<string> {
   const completion = await openai.chat.completions.create({
     model: 'gpt-3.5-turbo',
     // model: 'gpt-4-turbo',

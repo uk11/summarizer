@@ -12,6 +12,7 @@ model Summary {
   content   String
   fileName  String
   userId    String?
+  anonymousId  String? 
   user      User?       @relation(fields: [userId], references: [id])
   createdAt DateTime @default(now())
 }
