@@ -5,7 +5,7 @@ import Link from 'next/link';
 import { useAtom } from 'jotai';
 import { isSidebarOpenAtom } from '@/store';
 import { Summary } from '@prisma/client';
-import { useRouter } from 'next/navigation';
+import { useParams, useRouter } from 'next/navigation';
 import { RiStickyNoteAddLine } from 'react-icons/ri';
 import { RiMenu3Fill } from 'react-icons/ri';
 import { RiMoreFill } from 'react-icons/ri';
@@ -17,10 +17,10 @@ type Props = {
 };
 
 export default function Sidebar({ summaries }: Props) {
+  const params = useParams();
   const router = useRouter();
   const [isSidebarOpen, setIsSidebarOpen] = useAtom(isSidebarOpenAtom);
   const [currentId, setCurrentId] = useState<string | null>(null);
-  const [selectedId, setSelectedId] = useState<string | null>(null);
 
   return (
     <div
@@ -52,9 +52,8 @@ export default function Sidebar({ summaries }: Props) {
               <div
                 className={clsx(
                   'px-[8px] flex justify-between items-center hover:bg-gray-200 hover:rounded-[8px]',
-                  selectedId === data.id && 'bg-gray-300 rounded-[8px]'
+                  params.id === data.id && 'bg-gray-300 rounded-[8px]'
                 )}
-                onClick={() => setSelectedId(data.id)}
               >
                 <Link className='w-full py-[8px]' href={`/result/${data.id}`}>
                   {data.fileName}
