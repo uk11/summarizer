@@ -1,9 +1,9 @@
 import './globals.css';
 import type { Metadata } from 'next';
-import Header from '@/components/common/Header';
+import Header from '@/components/common/Header/Header';
+import Sidebar from '@/components/common/Sidebar/Sidebar';
 import AuthProvider from '@/Providers/AuthProvier';
 import QueryProvider from '@/Providers/QueryProvider';
-import Sidebar from '@/components/common/Sidebar';
 import { getSummaries } from '@/lib/summary';
 
 export const metadata: Metadata = {
@@ -21,16 +21,18 @@ export default async function RootLayout({
   return (
     <html lang='en' className='h-full'>
       <body className='h-full'>
-        <AuthProvider>
-          <div className='flex h-full '>
-            <Sidebar summaries={summaries} />
+        <QueryProvider>
+          <AuthProvider>
+            <div className='flex h-full '>
+              <Sidebar summaries={summaries} />
 
-            <div className='flex flex-col flex-1'>
-              <Header />
-              <QueryProvider>{children}</QueryProvider>
+              <div className='flex flex-col flex-1'>
+                <Header />
+                {children}
+              </div>
             </div>
-          </div>
-        </AuthProvider>
+          </AuthProvider>
+        </QueryProvider>
       </body>
     </html>
   );
