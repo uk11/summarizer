@@ -1,11 +1,11 @@
 'use client';
 
 import Link from 'next/link';
-import LoginModal from '../pages/home/LoginModal';
+import LoginModal from './LoginModal';
 import { useState } from 'react';
 import { useSession } from 'next-auth/react';
 import Image from 'next/image';
-import LogoutModal from '../pages/home/LogoutModal';
+import LogoutModal from './LogoutModal';
 import { RiMenu3Fill } from 'react-icons/ri';
 import { useAtom } from 'jotai';
 import { isSidebarOpenAtom } from '@/store';

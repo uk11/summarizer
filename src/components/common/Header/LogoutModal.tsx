@@ -27,7 +27,7 @@ export default function LogoutModal({
         <div className='relative w-full pb-[20px]'>
           <h1 className='text-center text-lg font-semibold'>계정 정보</h1>
           <button
-            className='absolute right-0 top-0 cursor-pointer'
+            className='absolute right-0 top-0'
             onClick={handleLogoutModalClick}
           >
             <XSvg />
@@ -36,7 +36,7 @@ export default function LogoutModal({
         <div className='flex justify-between w-full'>
           <span>{session?.user.email || session?.user.name}</span>
           <button
-            className='rounded px-3 py-1 border text-gray-600 hover:bg-gray-100 cursor-pointer'
+            className='rounded px-3 py-1 border text-gray-600 hover:bg-gray-100'
             onClick={handleLogout}
           >
             로그아웃
