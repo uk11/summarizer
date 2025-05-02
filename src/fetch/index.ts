@@ -12,3 +12,8 @@ export const uploadAndSummary = async (file: File) => {
 
   return res.json();
 };
+
+export const deleteSummary = async (id: string) => {
+  const res = await fetch(`/api/summary/${id}`, { method: 'DELETE' });
+  if (!res.ok) throw new Error('요약 삭제 실패');
+};

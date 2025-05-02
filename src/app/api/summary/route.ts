@@ -60,12 +60,10 @@ export async function POST(req: NextRequest) {
     const saved = await db.summary.create({ data });
 
     return NextResponse.json({ id: saved.id });
-  } catch (error) {
-    const err = error as Error;
-    return NextResponse.json(
-      { error: err.message ?? '요약 처리 중 오류가 발생했습니다.' },
-      { status: 500 }
-    );
+  } catch (err) {
+    const message =
+      err instanceof Error ? err.message : '서버 오류가 발생했습니다.';
+    return NextResponse.json({ error: message }, { status: 500 });
   }
 }
 
