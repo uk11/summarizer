@@ -57,90 +57,92 @@ export default function Sidebar() {
   return (
     <div
       className={clsx(
-        'transition-all duration-300 bg-gray-100',
-        isSidebarOpen ? 'w-[260px]' : 'w-0 overflow-hidden'
+        'transition-width duration-600 bg-gray-100 overflow-hidden',
+        isSidebarOpen ? 'w-[260px]' : 'w-0'
       )}
     >
-      <div className='h-[60px] flex items-center justify-between px-[16px]'>
-        <button
-          className='p-1 hover:bg-gray-200 hover:rounded-[6px]'
-          onClick={() => setIsSidebarOpen(false)}
-        >
-          <RiMenu3Fill className='w-[24px] h-[24px] cursor-pointer' />
-        </button>
+      <div className='w-[260px]'>
+        <div className='h-[60px] flex items-center justify-between px-[16px]'>
+          <button
+            className='p-1 hover:bg-gray-200 hover:rounded-[6px]'
+            onClick={() => setIsSidebarOpen(false)}
+          >
+            <RiMenu3Fill className='w-[24px] h-[24px] cursor-pointer' />
+          </button>
 
-        <button
-          className='p-1 hover:bg-gray-200 hover:rounded-[6px]'
-          onClick={() => router.push('/')}
-        >
-          <RiStickyNoteAddLine className='w-[24px] h-[24px] cursor-pointer' />
-        </button>
-      </div>
+          <button
+            className='p-1 hover:bg-gray-200 hover:rounded-[6px]'
+            onClick={() => router.push('/')}
+          >
+            <RiStickyNoteAddLine className='w-[24px] h-[24px] cursor-pointer' />
+          </button>
+        </div>
 
-      <div className='px-[12px]'>
-        <ul className='flex flex-col gap-[0px]'>
-          {summaries &&
-            summaries.map((data) => (
-              <li key={data.id}>
-                <div
-                  className={clsx(
-                    'px-[8px] flex justify-between items-center hover:bg-gray-200 hover:rounded-[8px]',
-                    params.id === data.id && 'bg-gray-300 rounded-[8px]'
-                  )}
-                >
-                  {isEditingId === data.id ? (
-                    <input
-                      value={editedFileName}
-                      onChange={(e) => setEditedFileName(e.target.value)}
-                      onKeyDown={(e) => {
-                        if (e.key === 'Enter') {
+        <div className='px-[12px]'>
+          <ul className='flex flex-col gap-[0px]'>
+            {summaries &&
+              summaries.map((data) => (
+                <li key={data.id}>
+                  <div
+                    className={clsx(
+                      'px-[8px] flex justify-between items-center hover:bg-gray-200 hover:rounded-[8px]',
+                      params.id === data.id && 'bg-gray-300 rounded-[8px]'
+                    )}
+                  >
+                    {isEditingId === data.id ? (
+                      <input
+                        value={editedFileName}
+                        onChange={(e) => setEditedFileName(e.target.value)}
+                        onKeyDown={(e) => {
+                          if (e.key === 'Enter') {
+                            setIsEditingId(null);
+                            mutate({ id: data.id, fileName: editedFileName });
+                          }
+                        }}
+                        onBlur={() => {
                           setIsEditingId(null);
                           mutate({ id: data.id, fileName: editedFileName });
-                        }
-                      }}
-                      onBlur={() => {
-                        setIsEditingId(null);
-                        mutate({ id: data.id, fileName: editedFileName });
-                      }}
-                      autoFocus
-                      className='w-full py-[8px] text-sm bg-white rounded px-2'
-                    />
-                  ) : (
-                    <Link
-                      className='w-full py-[8px]'
-                      href={`/result/${data.id}`}
-                    >
-                      {data.fileName}
-                    </Link>
-                  )}
-
-                  <div className='relative'>
-                    <button
-                      className='cursor-pointer flex items-center'
-                      onClick={() =>
-                        setCurrentId(currentId === data.id ? null : data.id)
-                      }
-                    >
-                      <RiMoreFill className='w-[24px] h-[24px] my-[8px]' />
-                    </button>
-
-                    {currentId === data.id && (
-                      <SummaryDropdown
-                        currentId={currentId}
-                        setCurrentId={setCurrentId}
-                        fileName={data.fileName}
-                        onEdit={() => {
-                          setIsEditingId(data.id);
-                          setEditedFileName(data.fileName);
-                          setCurrentId(null);
                         }}
+                        autoFocus
+                        className='w-full py-[8px] text-sm bg-white rounded px-2'
                       />
+                    ) : (
+                      <Link
+                        className='w-full py-[8px]'
+                        href={`/result/${data.id}`}
+                      >
+                        {data.fileName}
+                      </Link>
                     )}
+
+                    <div className='relative'>
+                      <button
+                        className='cursor-pointer flex items-center'
+                        onClick={() =>
+                          setCurrentId(currentId === data.id ? null : data.id)
+                        }
+                      >
+                        <RiMoreFill className='w-[24px] h-[24px] my-[8px]' />
+                      </button>
+
+                      {currentId === data.id && (
+                        <SummaryDropdown
+                          currentId={currentId}
+                          setCurrentId={setCurrentId}
+                          fileName={data.fileName}
+                          onEdit={() => {
+                            setIsEditingId(data.id);
+                            setEditedFileName(data.fileName);
+                            setCurrentId(null);
+                          }}
+                        />
+                      )}
+                    </div>
                   </div>
-                </div>
-              </li>
-            ))}
-        </ul>
+                </li>
+              ))}
+          </ul>
+        </div>
       </div>
     </div>
   );
