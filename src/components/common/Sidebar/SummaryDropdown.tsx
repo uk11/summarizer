@@ -28,7 +28,7 @@ export default function SummaryDropdown({
 
   return (
     <div
-      className='absolute p-[8px] w-max border bg-white rounded-[8px]'
+      className='fixed p-[8px] w-max border bg-white rounded-[8px] z-10'
       ref={targetRef}
     >
       <div className=''>

@@ -11,6 +11,9 @@
 }
 
 @layer utilities {
+  .transition-width {
+    transition-property: width;
+  }
 }
 
 @layer components {
