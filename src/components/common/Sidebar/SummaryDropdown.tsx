@@ -7,12 +7,14 @@ type Props = {
   currentId: string | null;
   setCurrentId: (id: string | null) => void;
   fileName: string;
+  onEdit: () => void;
 };
 
 export default function SummaryDropdown({
   currentId,
   setCurrentId,
   fileName,
+  onEdit,
 }: Props) {
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
 
@@ -30,7 +32,10 @@ export default function SummaryDropdown({
       ref={targetRef}
     >
       <div className=''>
-        <button className='w-full flex items-center px-[8px] py-[6px] gap-[10px] hover:bg-gray-100 hover:rounded-[8px]'>
+        <button
+          className='w-full flex items-center px-[8px] py-[6px] gap-[10px] hover:bg-gray-100 hover:rounded-[8px]'
+          onClick={onEdit}
+        >
           <RiEdit2Line className='w-[20px] h-[20px]' />
           제목 수정
         </button>
