@@ -4,7 +4,7 @@ import Header from '@/components/common/Header/Header';
 import Sidebar from '@/components/common/Sidebar/Sidebar';
 import AuthProvider from '@/Providers/AuthProvier';
 import QueryProvider from '@/Providers/QueryProvider';
-import { getSummaries } from '@/lib/summary';
+// import { getSummaries } from '@/lib/summary';
 
 export const metadata: Metadata = {
   title: 'Create Next App',
@@ -16,7 +16,7 @@ export default async function RootLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
-  const summaries = await getSummaries();
+  // const summaries = await getSummaries();
 
   return (
     <html lang='en' className='h-full'>
@@ -24,8 +24,8 @@ export default async function RootLayout({
         <QueryProvider>
           <AuthProvider>
             <div className='flex h-full '>
-              <Sidebar summaries={summaries} />
-
+              {/* <Sidebar summaries={summaries} /> */}
+              <Sidebar />
               <div className='flex flex-col flex-1'>
                 <Header />
                 {children}

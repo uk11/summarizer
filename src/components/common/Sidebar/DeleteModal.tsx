@@ -1,5 +1,5 @@
 import { deleteSummary } from '@/fetch';
-import { useMutation } from '@tanstack/react-query';
+import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { useRouter } from 'next/navigation';
 
 type Props = {
@@ -15,13 +15,14 @@ export default function DeleteModal({
   fileName,
   currentId,
 }: Props) {
+  const queryClient = useQueryClient();
   const router = useRouter();
 
   const { mutate } = useMutation({
     mutationFn: deleteSummary,
     onSuccess: () => {
       router.replace('/');
-      router.refresh();
+      queryClient.invalidateQueries({ queryKey: ['summaries'] });
     },
   });
 

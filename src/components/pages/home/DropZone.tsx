@@ -1,7 +1,7 @@
 'use client';
 
 import { uploadAndSummary } from '@/fetch';
-import { useMutation } from '@tanstack/react-query';
+import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { useRouter } from 'next/navigation';
 import { useDropzone, FileWithPath } from 'react-dropzone';
 import Spinner from '@/components/common/Spinner';
@@ -9,12 +9,13 @@ import clsx from 'clsx';
 
 const Dropzone = () => {
   const router = useRouter();
+  const queryClient = useQueryClient();
 
   const { mutate, isPending } = useMutation({
     mutationFn: uploadAndSummary,
     onSuccess: (data) => {
       router.push(`/result/${data.id}`);
-      router.refresh();
+      queryClient.invalidateQueries({ queryKey: ['summaries'] });
     },
   });
 
