@@ -1,7 +1,7 @@
 import './globals.css';
 import type { Metadata } from 'next';
-import Header from '@/components/common/Header/Header';
-import Sidebar from '@/components/common/Sidebar/Sidebar';
+import Header from '@/components/common/Header';
+import Sidebar from '@/components/common/Sidebar';
 import AuthProvider from '@/Providers/AuthProvier';
 import QueryProvider from '@/Providers/QueryProvider';
 // import { getSummaries } from '@/lib/summary';
