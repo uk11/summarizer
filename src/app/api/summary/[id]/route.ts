@@ -7,7 +7,7 @@ type Props = {
   }>;
 };
 
-export async function DELETE(req: NextRequest, { params }: Props) {
+export async function DELETE(_req: NextRequest, { params }: Props) {
   const { id } = await params;
   try {
     await db.summary.delete({ where: { id } });

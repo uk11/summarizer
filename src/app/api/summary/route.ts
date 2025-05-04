@@ -5,59 +5,51 @@ import * as mammoth from 'mammoth';
 import pdfParse from 'pdf-parse';
 import { db } from '@/lib/prisma';
 import { getServerSession } from 'next-auth';
-import { authOptions } from '../auth/[...nextauth]/route';
+import { authOptions } from '@/lib/authOptions';
 import { cookies } from 'next/headers';
 import { v4 as uuidv4 } from 'uuid';
+import { getSummaries } from '@/lib/summary';
 
 const openai = new OpenAI({
   apiKey: process.env.OPENAI_API_KEY,
 });
+
+export async function GET() {
+  try {
+    const data = await getSummaries();
+    return NextResponse.json(data);
+  } catch (err) {
+    const message =
+      err instanceof Error ? err.message : '서버 오류가 발생했습니다.';
+    return NextResponse.json({ error: message }, { status: 500 });
+  }
+}
 
 export async function POST(req: NextRequest) {
   const formData = await req.formData();
   const file = formData.get('file');
   const fileName = formData.get('fileName')?.toString();
 
-  if (!(file instanceof File)) {
+  if (!(file instanceof File))
     return NextResponse.json(
       { error: '유효한 파일이 아닙니다.' },
       { status: 400 }
     );
-  }
 
-  if (!fileName) {
+  if (!fileName)
     return NextResponse.json(
       { error: '파일명이 누락되었습니다.' },
       { status: 400 }
     );
-  }
 
   try {
     const content = await extractText(file);
-    const summary = await SummarizeText(content);
-    const session = await getServerSession(authOptions);
-    const userId = session?.user?.id;
+    const summary = await summarizeText(content);
+    const userInfo = await getUserOrAnonymousId();
 
-    const cookieStore = await cookies();
-    let anonymousId = cookieStore.get('anonymousId')?.value;
-
-    if (!userId && !anonymousId) {
-      anonymousId = uuidv4();
-      cookieStore.set({
-        name: 'anonymousId',
-        value: anonymousId,
-        path: '/',
-        maxAge: 60 * 60 * 24 * 30,
-      });
-    }
-
-    const data = {
-      content: summary,
-      fileName,
-      ...(userId ? { userId } : { anonymousId }),
-    };
-
-    const saved = await db.summary.create({ data });
+    const saved = await db.summary.create({
+      data: { content: summary, fileName, ...userInfo },
+    });
 
     return NextResponse.json({ id: saved.id });
   } catch (err) {
@@ -92,7 +84,7 @@ async function extractText(file: File): Promise<string> {
 }
 
 // GPT 요약 요청
-async function SummarizeText(text: string): Promise<string> {
+async function summarizeText(text: string): Promise<string> {
   const completion = await openai.chat.completions.create({
     model: 'gpt-3.5-turbo',
     // model: 'gpt-4-turbo',
@@ -112,4 +104,25 @@ async function SummarizeText(text: string): Promise<string> {
   return (
     completion.choices[0].message.content ?? '요약 결과를 가져오지 못했어요.'
   );
+}
+
+// 로그인/비로그인 유저 id 구분
+async function getUserOrAnonymousId() {
+  const session = await getServerSession(authOptions);
+  const userId = session?.user?.id;
+
+  const cookieStore = await cookies();
+  let anonymousId = cookieStore.get('anonymousId')?.value;
+
+  if (!userId && !anonymousId) {
+    anonymousId = uuidv4();
+    cookieStore.set({
+      name: 'anonymousId',
+      value: anonymousId,
+      path: '/',
+      maxAge: 60 * 60 * 24 * 30,
+    });
+  }
+
+  return userId ? { userId } : { anonymousId };
 }
