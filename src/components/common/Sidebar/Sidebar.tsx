@@ -57,29 +57,29 @@ export default function Sidebar() {
   return (
     <div
       className={clsx(
-        'transition-width duration-600 bg-gray-100 overflow-hidden',
+        'fixed h-screen overflow-y-auto bg-gray-100 duration-600',
         isSidebarOpen ? 'w-[260px]' : 'w-0'
       )}
     >
-      <div className='w-[260px]'>
+      <div className='w-[260px] flex flex-col h-screen'>
         <div className='h-[60px] flex items-center justify-between px-[16px]'>
           <button
-            className='p-1 hover:bg-gray-200 hover:rounded-[6px]'
+            className='p-[4px] hover:bg-gray-200 hover:rounded-[6px]'
             onClick={() => setIsSidebarOpen(false)}
           >
             <RiMenu3Fill className='w-[24px] h-[24px] cursor-pointer' />
           </button>
 
           <button
-            className='p-1 hover:bg-gray-200 hover:rounded-[6px]'
+            className='p-[4px] hover:bg-gray-200 hover:rounded-[6px]'
             onClick={() => router.push('/')}
           >
             <RiStickyNoteAddLine className='w-[24px] h-[24px] cursor-pointer' />
           </button>
         </div>
 
-        <div className='px-[12px]'>
-          <ul className='flex flex-col gap-[0px]'>
+        <div className='px-[12px] flex-1 overflow-y-auto'>
+          <ul>
             {summaries &&
               summaries.map((data) => (
                 <li key={data.id}>
@@ -104,7 +104,7 @@ export default function Sidebar() {
                           mutate({ id: data.id, fileName: editedFileName });
                         }}
                         autoFocus
-                        className='w-full py-[8px] text-sm bg-white rounded px-2'
+                        className='w-full py-[8px] text-sm bg-white rounded px-4'
                       />
                     ) : (
                       <Link

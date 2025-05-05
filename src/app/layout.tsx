@@ -1,10 +1,10 @@
 import './globals.css';
 import type { Metadata } from 'next';
-import Header from '@/components/common/Header';
-import Sidebar from '@/components/common/Sidebar';
+import Header from '@/components/common/Header/Header';
+import Sidebar from '@/components/common/Sidebar/Sidebar';
 import AuthProvider from '@/Providers/AuthProvier';
 import QueryProvider from '@/Providers/QueryProvider';
-// import { getSummaries } from '@/lib/summary';
+import ClientLayout from '@/components/common/ClientLayout';
 
 export const metadata: Metadata = {
   title: 'Create Next App',
@@ -16,21 +16,16 @@ export default async function RootLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
-  // const summaries = await getSummaries();
-
   return (
-    <html lang='en' className='h-full'>
-      <body className='h-full'>
+    <html lang='en'>
+      <body>
         <QueryProvider>
           <AuthProvider>
-            <div className='flex h-full '>
-              {/* <Sidebar summaries={summaries} /> */}
-              <Sidebar />
-              <div className='flex flex-col flex-1'>
-                <Header />
-                {children}
-              </div>
-            </div>
+            <Sidebar />
+            <ClientLayout>
+              <Header />
+              {children}
+            </ClientLayout>
           </AuthProvider>
         </QueryProvider>
       </body>
