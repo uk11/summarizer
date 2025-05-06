@@ -2,6 +2,9 @@ import { useState } from 'react';
 import { useOnClickOutside } from '@/hooks/useOutsideClick';
 import { RiEdit2Line, RiDeleteBinLine } from 'react-icons/ri';
 import DeleteModal from './DeleteModal';
+import { useMutation, useQueryClient } from '@tanstack/react-query';
+import { useRouter } from 'next/navigation';
+import { deleteSummary } from '@/fetch';
 
 type Props = {
   currentId: string | null;
@@ -17,14 +20,27 @@ export default function SummaryDropdown({
   onEdit,
 }: Props) {
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
-
-  const { targetRef } = useOnClickOutside({
-    onClickOutside: () => setCurrentId(null),
-  });
+  const queryClient = useQueryClient();
+  const router = useRouter();
 
   const handleSummaryDelete = () => {
     setIsDeleteModalOpen(!isDeleteModalOpen);
   };
+
+  const { targetRef } = useOnClickOutside({
+    onClickOutside: () => {
+      if (!isDeleteModalOpen) setCurrentId(null);
+    },
+  });
+
+  const { mutate } = useMutation({
+    mutationFn: deleteSummary,
+    onSuccess: () => {
+      setCurrentId(null);
+      router.replace('/');
+      queryClient.invalidateQueries({ queryKey: ['summaries'] });
+    },
+  });
 
   return (
     <div
@@ -50,10 +66,16 @@ export default function SummaryDropdown({
       </div>
 
       <DeleteModal
-        isOpen={isDeleteModalOpen}
-        onClose={handleSummaryDelete}
+        isDeleteModalOpen={isDeleteModalOpen}
         fileName={fileName}
         currentId={currentId}
+        onClose={() => {
+          setIsDeleteModalOpen(!isDeleteModalOpen);
+          setCurrentId(null);
+        }}
+        onDelete={() => {
+          if (currentId) mutate(currentId);
+        }}
       />
     </div>
   );
