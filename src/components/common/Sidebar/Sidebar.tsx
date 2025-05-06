@@ -48,6 +48,7 @@ export default function Sidebar() {
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['summaries'] });
+      router.refresh();
     },
     onError: (_err, _variables, ctx) => {
       queryClient.setQueryData(['summaries'], ctx?.prevSummary);
