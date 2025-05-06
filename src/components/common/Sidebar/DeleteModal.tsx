@@ -1,36 +1,32 @@
-import { deleteSummary } from '@/fetch';
-import { useMutation, useQueryClient } from '@tanstack/react-query';
-import { useRouter } from 'next/navigation';
+import { useOnClickOutside } from '@/hooks/useOutsideClick';
+import { createPortal } from 'react-dom';
 
 type Props = {
-  isOpen: boolean;
-  onClose: () => void;
+  isDeleteModalOpen: boolean;
   fileName: string;
   currentId: string | null;
+  onClose: () => void;
+  onDelete: () => void;
 };
 
 export default function DeleteModal({
-  isOpen,
+  isDeleteModalOpen,
   onClose,
   fileName,
-  currentId,
+  onDelete,
 }: Props) {
-  const queryClient = useQueryClient();
-  const router = useRouter();
-
-  const { mutate } = useMutation({
-    mutationFn: deleteSummary,
-    onSuccess: () => {
-      router.replace('/');
-      queryClient.invalidateQueries({ queryKey: ['summaries'] });
-    },
+  const { targetRef } = useOnClickOutside({
+    onClickOutside: onClose,
   });
 
-  if (!isOpen) return null;
+  if (!isDeleteModalOpen) return null;
 
-  return (
-    <div className='fixed inset-0 bg-black/40 flex justify-center items-center z-99'>
-      <div className=' bg-white flex justify-center items-center flex-col px-[20px] py-[30px] rounded-[10px] gap-[12px]'>
+  return createPortal(
+    <div className='fixed inset-0 bg-black/40 flex justify-center items-center'>
+      <div
+        className='bg-white flex justify-center items-center flex-col px-[20px] py-[30px] rounded-[10px] gap-[12px]'
+        ref={targetRef}
+      >
         <span>
           <span className='font-semibold'>{fileName}</span> 파일을
           삭제하시겠습니까?
@@ -39,14 +35,12 @@ export default function DeleteModal({
           <button className='modal-btn' onClick={onClose}>
             취소
           </button>
-          <button
-            className='modal-btn'
-            onClick={() => currentId && mutate(currentId)}
-          >
+          <button className='modal-btn' onClick={onDelete}>
             삭제
           </button>
         </div>
       </div>
-    </div>
+    </div>,
+    document.body
   );
 }
