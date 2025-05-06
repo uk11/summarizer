@@ -2,6 +2,7 @@ import { createPortal } from 'react-dom';
 import XSvg from '@/components/svg-components/XSvg';
 import { useSession } from 'next-auth/react';
 import { signOut } from 'next-auth/react';
+import { useOnClickOutside } from '@/hooks/useOutsideClick';
 
 type Props = {
   isLogoutModalOpen: boolean;
@@ -19,11 +20,18 @@ export default function LogoutModal({
     signOut({ callbackUrl: '/' });
   };
 
+  const { targetRef } = useOnClickOutside({
+    onClickOutside: handleLogoutModalClick,
+  });
+
   if (!isLogoutModalOpen) return null;
 
   return createPortal(
     <div className='fixed inset-0 bg-black/40 flex justify-center items-center'>
-      <div className='w-[400px] bg-white flex justify-center items-center flex-col px-[20px] py-[30px] rounded-[10px]'>
+      <div
+        className='w-[400px] bg-white flex justify-center items-center flex-col px-[20px] py-[30px] rounded-[10px]'
+        ref={targetRef}
+      >
         <div className='relative w-full pb-[20px]'>
           <h1 className='text-center text-lg font-semibold'>계정 정보</h1>
           <button

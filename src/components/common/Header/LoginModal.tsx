@@ -1,6 +1,7 @@
 import { createPortal } from 'react-dom';
 import XSvg from '@/components/svg-components/XSvg';
 import { signIn } from 'next-auth/react';
+import { useOnClickOutside } from '@/hooks/useOutsideClick';
 
 type Props = {
   isLoginModalOpen: boolean;
@@ -11,11 +12,18 @@ export default function LoginModal({
   isLoginModalOpen,
   handleLoginModalClick,
 }: Props) {
+  const { targetRef } = useOnClickOutside({
+    onClickOutside: handleLoginModalClick,
+  });
+
   if (!isLoginModalOpen) return null;
 
   return createPortal(
     <div className='fixed inset-0 bg-black/40 flex justify-center items-center'>
-      <div className='w-[400px] bg-white flex justify-center items-center flex-col px-[20px] py-[30px] rounded-[10px]'>
+      <div
+        className='w-[400px] bg-white flex justify-center items-center flex-col px-[20px] py-[30px] rounded-[10px]'
+        ref={targetRef}
+      >
         <div className='relative w-full pb-[20px]'>
           <h1 className='text-center text-lg font-semibold'>로그인</h1>
           <button
