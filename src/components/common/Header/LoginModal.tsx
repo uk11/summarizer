@@ -5,15 +5,12 @@ import { useOnClickOutside } from '@/hooks/useOutsideClick';
 
 type Props = {
   isLoginModalOpen: boolean;
-  handleLoginModalClick: () => void;
+  onClose: () => void;
 };
 
-export default function LoginModal({
-  isLoginModalOpen,
-  handleLoginModalClick,
-}: Props) {
+export default function LoginModal({ isLoginModalOpen, onClose }: Props) {
   const { targetRef } = useOnClickOutside({
-    onClickOutside: handleLoginModalClick,
+    onClickOutside: onClose,
   });
 
   if (!isLoginModalOpen) return null;
@@ -27,7 +24,7 @@ export default function LoginModal({
         <div className='relative w-full pb-[20px]'>
           <h1 className='text-center text-lg font-semibold'>로그인</h1>
           <button
-            onClick={handleLoginModalClick}
+            onClick={onClose}
             className='absolute right-0 top-0 cursor-pointer'
           >
             <XSvg />

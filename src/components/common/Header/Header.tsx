@@ -63,14 +63,14 @@ export default function Header() {
       {isLoginModalOpen && (
         <LoginModal
           isLoginModalOpen={isLoginModalOpen}
-          handleLoginModalClick={handleLoginModalClick}
+          onClose={handleLoginModalClick}
         />
       )}
 
       {isLogoutModalOpen && (
         <LogoutModal
           isLogoutModalOpen={isLogoutModalOpen}
-          handleLogoutModalClick={handleLogoutModalClick}
+          onClose={handleLogoutModalClick}
         />
       )}
     </header>

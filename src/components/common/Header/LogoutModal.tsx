@@ -6,22 +6,19 @@ import { useOnClickOutside } from '@/hooks/useOutsideClick';
 
 type Props = {
   isLogoutModalOpen: boolean;
-  handleLogoutModalClick: () => void;
+  onClose: () => void;
 };
 
-export default function LogoutModal({
-  isLogoutModalOpen,
-  handleLogoutModalClick,
-}: Props) {
+export default function LogoutModal({ isLogoutModalOpen, onClose }: Props) {
   const { data: session } = useSession();
 
   const handleLogout = () => {
-    handleLogoutModalClick();
+    onClose();
     signOut({ callbackUrl: '/' });
   };
 
   const { targetRef } = useOnClickOutside({
-    onClickOutside: handleLogoutModalClick,
+    onClickOutside: onClose,
   });
 
   if (!isLogoutModalOpen) return null;
@@ -34,10 +31,7 @@ export default function LogoutModal({
       >
         <div className='relative w-full pb-[20px]'>
           <h1 className='text-center text-lg font-semibold'>계정 정보</h1>
-          <button
-            className='absolute right-0 top-0'
-            onClick={handleLogoutModalClick}
-          >
+          <button className='absolute right-0 top-0' onClick={onClose}>
             <XSvg />
           </button>
         </div>
