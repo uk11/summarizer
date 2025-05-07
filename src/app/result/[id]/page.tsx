@@ -1,3 +1,4 @@
+import ResultClient from '@/components/pages/result';
 import { db } from '@/lib/prisma';
 
 type Props = {
@@ -6,10 +7,14 @@ type Props = {
 
 export default async function ResultPage({ params }: Props) {
   const { id } = await params;
-  const summary = await db.summary.findUnique({
+
+  const summary = await db.summary.findUniqueOrThrow({
     where: { id },
   });
 
-  if (!summary) return <div>내용 없음</div>;
-  return <div>{summary.content}</div>;
+  return (
+    <div>
+      <ResultClient summary={summary} />
+    </div>
+  );
 }
