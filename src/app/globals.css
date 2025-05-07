@@ -14,6 +14,10 @@
   .transition-width {
     transition-property: width;
   }
+
+  .scrollbar-stable {
+    scrollbar-gutter: stable;
+  }
 }
 
 @layer components {
