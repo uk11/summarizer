@@ -15,7 +15,7 @@ export const uploadAndSummary = async (file: File) => {
 };
 
 export const getSummary = async (): Promise<Summary[]> => {
-  const res = await fetch('/api/summary/', { method: 'GET' });
+  const res = await fetch('/api/summary/');
 
   if (!res.ok) throw new Error('요약 조회 실패');
   return res.json();
@@ -35,4 +35,22 @@ export const updateSummary = async (id: string, fileName: string) => {
   });
 
   if (!res.ok) throw new Error('요약 수정 실패');
+};
+
+export const getChatMessages = async (summaryId: string) => {
+  const res = await fetch(`/api/chat/${summaryId}`);
+  if (!res.ok) throw new Error('채팅 조회 실패');
+
+  const data = await res.json();
+  return data.messages as { role: 'user' | 'assistant'; content: string }[];
+};
+
+export const postChatMessage = async (summaryId: string, question: string) => {
+  const res = await fetch('/api/chat/', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ summaryId, question }),
+  });
+
+  if (!res.ok) throw new Error('채팅 생성 실패');
 };
