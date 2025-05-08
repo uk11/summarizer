@@ -4,7 +4,7 @@ import {
   shift,
   autoUpdate,
 } from '@floating-ui/react-dom-interactions';
-import { useEffect, useState } from 'react';
+import { RefObject, useLayoutEffect, useState } from 'react';
 import { createPortal } from 'react-dom';
 import { useOnClickOutside } from '@/hooks/useOutsideClick';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
@@ -16,6 +16,7 @@ import DeleteModal from './DeleteModal';
 type Props = {
   fileName: string;
   currentId: string | null;
+  btnRef: RefObject<HTMLButtonElement | null>;
   setCurrentId: (id: string | null) => void;
   onEdit: () => void;
 };
@@ -23,6 +24,7 @@ type Props = {
 export default function SummaryDropdown({
   fileName,
   currentId,
+  btnRef,
   setCurrentId,
   onEdit,
 }: Props) {
@@ -35,27 +37,26 @@ export default function SummaryDropdown({
     middleware: [flip(), shift()],
   });
 
-  const floatingRef = refs.floating;
-
-  useEffect(() => {
-    const btn = document.querySelector(`[data-summary-id="${currentId}"]`);
+  useLayoutEffect(() => {
+    const referenceEl = btnRef.current;
     const floatingEl = refs.floating.current;
 
-    if (btn instanceof HTMLElement && floatingEl instanceof HTMLElement) {
-      refs.reference.current = btn;
-      return autoUpdate(btn, floatingEl, update);
-    }
-  }, [currentId, refs.reference, refs.floating, update]);
+    if (!referenceEl || !floatingEl) return;
+
+    refs.reference.current = referenceEl;
+
+    return autoUpdate(referenceEl, floatingEl, update);
+  }, [btnRef, refs.reference, refs.floating, update]);
+
+  const handleSummaryDelete = () => {
+    setIsDeleteModalOpen(true);
+  };
 
   const { targetRef } = useOnClickOutside({
     onClickOutside: () => {
       if (!isDeleteModalOpen) setCurrentId(null);
     },
   });
-
-  const handleSummaryDelete = () => {
-    setIsDeleteModalOpen(!isDeleteModalOpen);
-  };
 
   const { mutate } = useMutation({
     mutationFn: deleteSummary,
@@ -69,7 +70,7 @@ export default function SummaryDropdown({
   return createPortal(
     <div
       ref={(node) => {
-        floatingRef.current = node;
+        refs.floating.current = node;
         targetRef.current = node;
       }}
       className='fixed top-0 left-0 p-[8px] w-max border bg-white rounded-[8px] z-50 ml-[100px]'

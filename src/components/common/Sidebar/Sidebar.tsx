@@ -9,10 +9,10 @@ import { useParams, useRouter } from 'next/navigation';
 import { RiStickyNoteAddLine } from 'react-icons/ri';
 import { RiMenu3Fill } from 'react-icons/ri';
 import { RiMoreFill } from 'react-icons/ri';
-import { useState } from 'react';
-import SummaryDropdown from './SummaryDropdown';
+import { useRef, useState } from 'react';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { getSummary, updateSummary } from '@/fetch';
+import SummaryDropdown from './SummaryDropdown';
 
 export default function Sidebar() {
   const params = useParams();
@@ -22,6 +22,7 @@ export default function Sidebar() {
   const [isEditingId, setIsEditingId] = useState<string | null>(null);
   const [editedFileName, setEditedFileName] = useState('');
   const queryClient = useQueryClient();
+  const btnRefs = useRef<Record<string, HTMLButtonElement | null>>({});
 
   const { data: summaries } = useQuery<Summary[]>({
     queryKey: ['summaries'],
@@ -122,16 +123,19 @@ export default function Sidebar() {
                         onClick={() =>
                           setCurrentId(currentId === data.id ? null : data.id)
                         }
-                        data-summary-id={data.id}
+                        ref={(el) => {
+                          btnRefs.current[data.id] = el;
+                        }}
                       >
                         <RiMoreFill className='w-[24px] h-[24px] my-[8px]' />
                       </button>
 
                       {currentId === data.id && (
                         <SummaryDropdown
-                          currentId={currentId}
-                          setCurrentId={setCurrentId}
                           fileName={data.fileName}
+                          currentId={currentId}
+                          btnRef={{ current: btnRefs.current[data.id] }}
+                          setCurrentId={setCurrentId}
                           onEdit={() => {
                             setIsEditingId(data.id);
                             setEditedFileName(data.fileName);
