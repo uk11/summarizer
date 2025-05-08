@@ -76,7 +76,7 @@ async function generateAnswer(
   const gptMessages: ChatCompletionMessageParam[] = [
     {
       role: 'system',
-      content: `당신은 친절하고 전문적인 AI입니다. 아래 요약 내용을 참고하여 사용자의 질문에 답변하세요. 사용자가 한국어로 질문하면 한국어로, 영어로 질문하면 영어로 답변하세요.
+      content: `아래 요약 내용을 참고하여 사용자의 질문에 답변하세요.
 
       요약 내용:
       ${summaryContent}`,
