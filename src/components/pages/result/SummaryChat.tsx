@@ -13,6 +13,7 @@ export default function SummaryChat({ summaryId }: Props) {
   const queryClient = useQueryClient();
   const scrollRef = useRef<HTMLDivElement>(null);
   const [questionInput, setQuestionInput] = useState('');
+  const prevLength = useRef<number | null>(null);
 
   const { data: messages } = useQuery({
     queryKey: ['summuryChat', summaryId],
@@ -22,7 +23,7 @@ export default function SummaryChat({ summaryId }: Props) {
         {
           id: 'default',
           role: 'assistant',
-          content: '안녕하세요! 요약에 대해 무엇이든 질문하세요.',
+          content: '안녕하세요! 요약을 읽고 궁금한 점이 있다면 알려주세요',
         },
         ...messages,
       ] as { id: string; role: 'user' | 'assistant'; content: string }[],
@@ -42,27 +43,27 @@ export default function SummaryChat({ summaryId }: Props) {
   });
 
   useEffect(() => {
-    if (!scrollRef.current) return;
+    if (!scrollRef.current || !messages) return;
 
-    scrollRef.current.scrollTop = scrollRef.current.scrollHeight;
+    scrollRef.current.scrollTo({
+      top: scrollRef.current.scrollHeight,
+      behavior: prevLength.current === null ? 'auto' : 'smooth',
+    });
+
+    prevLength.current = messages.length;
   }, [messages]);
 
   return (
-    <div
-      className='flex flex-col border p-[10px] flex-[6] overflow-y-auto scrollbar-stable'
-      ref={scrollRef}
-    >
-      <div>asd</div>
-      <div className='flex-1'>
+    <div className='flex flex-col flex-[6] p-[10px] pr-0 border'>
+      <div className='text-[20px] font-semibold mb-[8px]'>채팅</div>
+      <div
+        className='flex-1 overflow-y-auto scrollbar-stable pr-[6px]'
+        ref={scrollRef}
+      >
         {messages &&
           messages.map((msg) => (
             <div
               key={msg.id}
-              ref={(el) => {
-                if (msg === messages[messages.length - 1]) {
-                  el?.scrollIntoView({ behavior: 'smooth' });
-                }
-              }}
               className={clsx(
                 'px-[8px] py-[6px] mb-[10px] rounded max-w-[80%] w-fit break-words whitespace-pre-wrap',
                 msg.role === 'user' ? 'bg-gray-100 ml-auto' : 'mr-auto'
@@ -79,7 +80,7 @@ export default function SummaryChat({ summaryId }: Props) {
         )}
       </div>
 
-      <div className='flex items-center gap-[8px] pl-[10px] mt-[8px]'>
+      <div className='flex items-center gap-[8px] mt-[8px] pr-[10px]'>
         <input
           type='text'
           value={questionInput}
