@@ -23,7 +23,7 @@ export default function Sidebar() {
   const [editedFileName, setEditedFileName] = useState('');
   const queryClient = useQueryClient();
 
-  const { data: summaries } = useQuery({
+  const { data: summaries } = useQuery<Summary[]>({
     queryKey: ['summaries'],
     queryFn: getSummary,
   });
@@ -58,7 +58,7 @@ export default function Sidebar() {
   return (
     <div
       className={clsx(
-        'fixed h-screen overflow-y-auto bg-gray-100 duration-600',
+        'fixed h-screen overflow-hidden bg-gray-100 duration-600',
         isSidebarOpen ? 'w-[260px]' : 'w-0'
       )}
     >
@@ -79,7 +79,7 @@ export default function Sidebar() {
           </button>
         </div>
 
-        <div className='px-[12px] flex-1 overflow-y-auto'>
+        <div className='px-[12px] flex-1 overflow-y-auto pb-[20px]'>
           <ul>
             {summaries &&
               summaries.map((data) => (
@@ -122,6 +122,7 @@ export default function Sidebar() {
                         onClick={() =>
                           setCurrentId(currentId === data.id ? null : data.id)
                         }
+                        data-summary-id={data.id}
                       >
                         <RiMoreFill className='w-[24px] h-[24px] my-[8px]' />
                       </button>
