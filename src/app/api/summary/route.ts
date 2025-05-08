@@ -43,12 +43,16 @@ export async function POST(req: NextRequest) {
     );
 
   try {
-    const content = await extractText(file);
-    const summary = await summarizeText(content);
+    const fileContent = await extractText(file);
+    const summary = await generateSummary(fileContent);
     const userInfo = await getUserOrAnonymousId();
 
     const saved = await db.summary.create({
-      data: { content: summary, fileName, ...userInfo },
+      data: {
+        content: summary,
+        fileName,
+        ...userInfo,
+      },
     });
 
     return NextResponse.json({ id: saved.id });
@@ -60,7 +64,7 @@ export async function POST(req: NextRequest) {
 }
 
 // 파일 확장자별 텍스트 추출
-async function extractText(file: File): Promise<string> {
+async function extractText(file: File) {
   const buffer = Buffer.from(await file.arrayBuffer());
   const ext = path.extname(file.name).toLowerCase();
 
@@ -84,18 +88,18 @@ async function extractText(file: File): Promise<string> {
 }
 
 // GPT 요약 요청
-async function summarizeText(text: string): Promise<string> {
+async function generateSummary(fileContent: string) {
   const completion = await openai.chat.completions.create({
     model: 'gpt-3.5-turbo',
     // model: 'gpt-4-turbo',
     messages: [
       {
         role: 'system',
-        content: '다음 텍스트를 한국어로 간단하게 요약해줘.',
+        content: `제공된 텍스트를 이해하고 핵심 내용을 간결하고 명확하게 요약해 주세요.`,
       },
       {
         role: 'user',
-        content: text,
+        content: fileContent,
       },
     ],
     temperature: 0.7,

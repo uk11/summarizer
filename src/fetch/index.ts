@@ -1,5 +1,3 @@
-import { Summary } from '@prisma/client';
-
 export const uploadAndSummary = async (file: File) => {
   const formData = new FormData();
   formData.append('file', file);
@@ -14,7 +12,7 @@ export const uploadAndSummary = async (file: File) => {
   return res.json();
 };
 
-export const getSummary = async (): Promise<Summary[]> => {
+export const getSummary = async () => {
   const res = await fetch('/api/summary/');
 
   if (!res.ok) throw new Error('요약 조회 실패');
