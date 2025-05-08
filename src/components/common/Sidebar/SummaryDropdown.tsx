@@ -12,6 +12,7 @@ import { useRouter } from 'next/navigation';
 import { RiEdit2Line, RiDeleteBinLine } from 'react-icons/ri';
 import { deleteSummary } from '@/fetch';
 import DeleteModal from './DeleteModal';
+import clsx from 'clsx';
 
 type Props = {
   fileName: string;
@@ -69,11 +70,14 @@ export default function SummaryDropdown({
 
   return createPortal(
     <div
+      className={clsx(
+        'fixed top-0 left-0 p-[8px] w-max border bg-white rounded-[8px] z-50 ml-[100px]',
+        isDeleteModalOpen && 'hidden'
+      )}
       ref={(node) => {
         refs.floating.current = node;
         targetRef.current = node;
       }}
-      className='fixed top-0 left-0 p-[8px] w-max border bg-white rounded-[8px] z-50 ml-[100px]'
       style={{
         transform: `translate(${x}px, ${y}px)`,
       }}
