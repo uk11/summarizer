@@ -54,12 +54,12 @@ export default function SummaryChat({ summaryId }: Props) {
   }, [messages]);
 
   return (
-    <div className='flex flex-col flex-[6] p-[10px] pr-0 border'>
-      <div className='text-[20px] font-semibold mb-[8px]'>채팅</div>
+    <div className='flex flex-col flex-[6] p-[10px] pr-0 pt-0 border'>
       <div
-        className='flex-1 overflow-y-auto scrollbar-stable pr-[6px]'
+        className='flex-1 overflow-y-auto scrollbar-stable pr-[6px] pt-[10px]'
         ref={scrollRef}
       >
+        <div className='text-[20px] font-semibold mb-[8px]'>채팅</div>
         {messages &&
           messages.map((msg) => (
             <div
