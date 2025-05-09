@@ -72,3 +72,13 @@ model ChatMessage {
   createdAt  DateTime @default(now())
   summary    Summary  @relation(fields: [summaryId], references: [id])
 }
+
+model SaveSummaryAndChat {
+  id        String   @id @default(uuid())
+  summaryId  String
+  userId    String
+  fileName  String
+  content   String
+  messages  Json
+  createdAt DateTime @default(now())
+}
