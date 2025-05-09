@@ -80,14 +80,14 @@ export default function Sidebar() {
           </button>
         </div>
 
-        <div className='px-[12px] flex-1 overflow-y-auto pb-[20px]'>
+        <div className='pl-[12px] pr-[10px] flex-1 overflow-y-auto pb-[20px]'>
           <ul>
             {summaries &&
               summaries.map((data) => (
                 <li key={data.id}>
                   <div
                     className={clsx(
-                      'px-[8px] flex justify-between items-center hover:bg-gray-200 hover:rounded-[8px]',
+                      'px-[8px] flex gap-[10px] justify-between items-center hover:bg-gray-200 hover:rounded-[8px] whitespace-nowrap',
                       params.id === data.id && 'bg-gray-300 rounded-[8px]'
                     )}
                   >
@@ -110,7 +110,7 @@ export default function Sidebar() {
                       />
                     ) : (
                       <Link
-                        className='w-full py-[8px]'
+                        className='w-full py-[8px] overflow-hidden'
                         href={`/result/${data.id}`}
                       >
                         {data.fileName}
@@ -127,7 +127,7 @@ export default function Sidebar() {
                           btnRefs.current[data.id] = el;
                         }}
                       >
-                        <RiMoreFill className='w-[24px] h-[24px] my-[8px]' />
+                        <RiMoreFill className='w-[24px] h-[24px] my-[8px] text-gray-600 hover:text-gray-900 hover:scale-110' />
                       </button>
 
                       {currentId === data.id && (
