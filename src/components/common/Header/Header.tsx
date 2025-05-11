@@ -5,14 +5,14 @@ import LoginModal from './LoginModal';
 import { useState } from 'react';
 import { useSession } from 'next-auth/react';
 import Image from 'next/image';
-import LogoutModal from './LogoutModal';
+import UserInfoModal from './UserInfoModal';
 import { RiMenu3Fill } from 'react-icons/ri';
 import { useAtom } from 'jotai';
 import { isSidebarOpenAtom } from '@/store';
 
 export default function Header() {
   const [isLoginModalOpen, setIsLoginModalOpen] = useState(false);
-  const [isLogoutModalOpen, setIsLogoutModalOpen] = useState(false);
+  const [isUserInfoModalOpen, setIsUserInfoModalOpen] = useState(false);
   const [isSidebarOpen, setIsSidebarOpen] = useAtom(isSidebarOpenAtom);
   const { data: session, status } = useSession();
 
@@ -20,8 +20,8 @@ export default function Header() {
     setIsLoginModalOpen(!isLoginModalOpen);
   };
 
-  const handleLogoutModalClick = () => {
-    setIsLogoutModalOpen(!isLogoutModalOpen);
+  const handleUserInfoModalClick = () => {
+    setIsUserInfoModalOpen(!isUserInfoModalOpen);
   };
 
   return (
@@ -48,7 +48,7 @@ export default function Header() {
           alt='프로필 이미지'
           width={34}
           height={34}
-          onClick={handleLogoutModalClick}
+          onClick={handleUserInfoModalClick}
           className='rounded-full cursor-pointer mr-[4px]'
         />
       ) : (
@@ -61,16 +61,13 @@ export default function Header() {
       )}
 
       {isLoginModalOpen && (
-        <LoginModal
-          isLoginModalOpen={isLoginModalOpen}
-          onClose={handleLoginModalClick}
-        />
+        <LoginModal isOpen={isLoginModalOpen} onClose={handleLoginModalClick} />
       )}
 
-      {isLogoutModalOpen && (
-        <LogoutModal
-          isLogoutModalOpen={isLogoutModalOpen}
-          onClose={handleLogoutModalClick}
+      {isUserInfoModalOpen && (
+        <UserInfoModal
+          isOpen={isUserInfoModalOpen}
+          onClose={handleUserInfoModalClick}
         />
       )}
     </header>

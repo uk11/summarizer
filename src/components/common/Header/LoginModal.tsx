@@ -4,16 +4,16 @@ import { signIn } from 'next-auth/react';
 import { useOnClickOutside } from '@/hooks/useOutsideClick';
 
 type Props = {
-  isLoginModalOpen: boolean;
+  isOpen: boolean;
   onClose: () => void;
 };
 
-export default function LoginModal({ isLoginModalOpen, onClose }: Props) {
+export default function LoginModal({ isOpen, onClose }: Props) {
   const { targetRef } = useOnClickOutside({
     onClickOutside: onClose,
   });
 
-  if (!isLoginModalOpen) return null;
+  if (!isOpen) return null;
 
   return createPortal(
     <div className='fixed inset-0 bg-black/40 flex justify-center items-center'>
