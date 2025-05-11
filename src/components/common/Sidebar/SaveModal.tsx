@@ -5,14 +5,14 @@ type Props = {
   fileName: string;
   isOpen: boolean;
   onClose: () => void;
-  onDelete: () => void;
+  onSave: () => void;
 };
 
-export default function DeleteModal({
+export default function SaveModal({
   fileName,
   isOpen,
   onClose,
-  onDelete,
+  onSave,
 }: Props) {
   const { targetRef } = useOnClickOutside({
     onClickOutside: onClose,
@@ -28,14 +28,14 @@ export default function DeleteModal({
       >
         <span>
           <span className='font-semibold'>{fileName}</span> 파일을
-          삭제하시겠습니까?
+          저장하시겠습니까?
         </span>
         <div className='flex justify-end  w-full gap-[10px]'>
           <button className='basic-btn' onClick={onClose}>
             취소
           </button>
-          <button className='basic-btn' onClick={onDelete}>
-            삭제
+          <button className='basic-btn' onClick={onSave}>
+            저장
           </button>
         </div>
       </div>
