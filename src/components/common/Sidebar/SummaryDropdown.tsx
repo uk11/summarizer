@@ -9,10 +9,11 @@ import { createPortal } from 'react-dom';
 import { useOnClickOutside } from '@/hooks/useOutsideClick';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { useRouter } from 'next/navigation';
-import { RiEdit2Line, RiDeleteBinLine } from 'react-icons/ri';
-import { deleteSummary } from '@/fetch';
+import { RiEdit2Line, RiDeleteBinLine, RiArchive2Line } from 'react-icons/ri';
+import { deleteSummary, postSummaryAndChat } from '@/fetch';
 import DeleteModal from './DeleteModal';
 import clsx from 'clsx';
+import SaveModal from './SaveModal';
 
 type Props = {
   fileName: string;
@@ -30,6 +31,8 @@ export default function SummaryDropdown({
   onEdit,
 }: Props) {
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
+  const [isSaveModalOpen, setIsSaveModalOpen] = useState(false);
+
   const queryClient = useQueryClient();
   const router = useRouter();
 
@@ -49,17 +52,15 @@ export default function SummaryDropdown({
     return autoUpdate(referenceEl, floatingEl, update);
   }, [btnRef, refs.reference, refs.floating, update]);
 
-  const handleSummaryDelete = () => {
-    setIsDeleteModalOpen(true);
-  };
-
   const { targetRef } = useOnClickOutside({
     onClickOutside: () => {
-      if (!isDeleteModalOpen) setCurrentId(null);
+      if (!isDeleteModalOpen && !isSaveModalOpen) {
+        setCurrentId(null);
+      }
     },
   });
 
-  const { mutate } = useMutation({
+  const { mutate: deleteMutate } = useMutation({
     mutationFn: deleteSummary,
     onSuccess: () => {
       setCurrentId(null);
@@ -68,11 +69,18 @@ export default function SummaryDropdown({
     },
   });
 
+  const { mutate: saveMutate } = useMutation({
+    mutationFn: postSummaryAndChat,
+    onSuccess: () => {
+      setCurrentId(null);
+    },
+  });
+
   return createPortal(
     <div
       className={clsx(
         'fixed top-0 left-0 p-[8px] w-max border bg-white rounded-[8px] z-50 ml-[100px]',
-        isDeleteModalOpen && 'hidden'
+        (isDeleteModalOpen || isSaveModalOpen) && 'hidden'
       )}
       ref={(node) => {
         refs.floating.current = node;
@@ -93,7 +101,15 @@ export default function SummaryDropdown({
 
         <button
           className='w-full flex items-center px-[8px] py-[6px] gap-[10px] hover:bg-gray-100 hover:rounded-[8px]'
-          onClick={handleSummaryDelete}
+          onClick={() => setIsSaveModalOpen(!isSaveModalOpen)}
+        >
+          <RiArchive2Line className='w-[20px] h-[20px]' />
+          저장히기
+        </button>
+
+        <button
+          className='w-full flex items-center px-[8px] py-[6px] gap-[10px] hover:bg-gray-100 hover:rounded-[8px]'
+          onClick={() => setIsDeleteModalOpen(!isDeleteModalOpen)}
         >
           <RiDeleteBinLine className='w-[20px] h-[20px]' />
           삭제
@@ -101,16 +117,23 @@ export default function SummaryDropdown({
       </div>
 
       <DeleteModal
-        isDeleteModalOpen={isDeleteModalOpen}
+        isOpen={isDeleteModalOpen}
         fileName={fileName}
-        currentId={currentId}
         onClose={() => {
           setIsDeleteModalOpen(!isDeleteModalOpen);
           setCurrentId(null);
         }}
-        onDelete={() => {
-          if (currentId) mutate(currentId);
+        onDelete={() => currentId && deleteMutate(currentId)}
+      />
+
+      <SaveModal
+        isOpen={isSaveModalOpen}
+        fileName={fileName}
+        onClose={() => {
+          setIsSaveModalOpen(!isSaveModalOpen);
+          setCurrentId(null);
         }}
+        onSave={() => currentId && saveMutate(currentId)}
       />
     </div>,
     document.body

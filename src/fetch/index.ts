@@ -1,3 +1,5 @@
+import { SaveSummaryAndChat } from '@prisma/client';
+
 export const uploadAndSummary = async (file: File) => {
   const formData = new FormData();
   formData.append('file', file);
@@ -51,4 +53,21 @@ export const postChatMessage = async (summaryId: string, question: string) => {
   });
 
   if (!res.ok) throw new Error('채팅 생성 실패');
+};
+
+export const postSummaryAndChat = async (id: string) => {
+  const res = await fetch(`/api/summary/${id}/save`, {
+    method: 'POST',
+  });
+
+  if (!res.ok) throw new Error('저장 실패');
+};
+
+export const getSummaryAndChat = async (
+  id: string
+): Promise<{ data: SaveSummaryAndChat[] }> => {
+  const res = await fetch(`/api/summary/${id}/save`);
+
+  if (!res.ok) throw new Error('저장 실패');
+  return res.json();
 };
