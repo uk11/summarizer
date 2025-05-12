@@ -11,6 +11,7 @@ model Summary {
   id           String        @id @default(uuid())
   content      String
   fileName     String
+  isSaved Boolean @default(false)
   userId       String?
   anonymousId  String?
   createdAt    DateTime      @default(now())
@@ -70,15 +71,5 @@ model ChatMessage {
   role       String
   content    String
   createdAt  DateTime @default(now())
-  summary    Summary  @relation(fields: [summaryId], references: [id])
-}
-
-model SaveSummaryAndChat {
-  id        String   @id @default(uuid())
-  summaryId  String
-  userId    String
-  fileName  String
-  content   String
-  messages  Json
-  createdAt DateTime @default(now())
+  summary    Summary  @relation(fields: [summaryId], references: [id], onDelete: Cascade)
 }
