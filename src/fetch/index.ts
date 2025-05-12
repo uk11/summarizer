@@ -60,7 +60,7 @@ export const getChatMessages = async (summaryId: string) => {
   }
 
   const data = await res.json();
-  return data.messages as { role: 'user' | 'assistant'; content: string }[];
+  return data.chatMessages as { role: 'user' | 'assistant'; content: string }[];
 };
 
 export const postChatMessage = async (summaryId: string, question: string) => {
