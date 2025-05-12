@@ -1,4 +1,4 @@
-import { SaveSummaryAndChat } from '@prisma/client';
+import { Summary } from '@prisma/client';
 
 export const uploadAndSummary = async (file: File) => {
   const formData = new FormData();
@@ -10,36 +10,54 @@ export const uploadAndSummary = async (file: File) => {
     body: formData,
   });
 
-  if (!res.ok) throw new Error('요약 요청 실패');
+  if (!res.ok) {
+    const { error } = await res.json();
+    console.error('summary 업로드 실패' + error);
+  }
+
   return res.json();
 };
 
-export const getSummary = async () => {
+export const getSummary = async (): Promise<{ data: Summary[] }> => {
   const res = await fetch('/api/summary/');
 
-  if (!res.ok) throw new Error('요약 조회 실패');
+  if (!res.ok) {
+    const { error } = await res.json();
+    console.error('summary 조회 실패' + error);
+  }
+
   return res.json();
 };
 
 export const deleteSummary = async (id: string) => {
   const res = await fetch(`/api/summary/${id}`, { method: 'DELETE' });
 
-  if (!res.ok) throw new Error('요약 삭제 실패');
+  if (!res.ok) {
+    const { error } = await res.json();
+    console.error('summary 삭제 실패' + error);
+  }
 };
 
-export const updateSummary = async (id: string, fileName: string) => {
+export const updateSummaryFileName = async (id: string, fileName: string) => {
   const res = await fetch(`/api/summary/${id}`, {
     method: 'PATCH',
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify({ fileName }),
   });
 
-  if (!res.ok) throw new Error('요약 수정 실패');
+  if (!res.ok) {
+    const { error } = await res.json();
+    console.error('summary filename 수정 실패' + error);
+  }
 };
 
 export const getChatMessages = async (summaryId: string) => {
   const res = await fetch(`/api/chat/${summaryId}`);
-  if (!res.ok) throw new Error('채팅 조회 실패');
+
+  if (!res.ok) {
+    const { error } = await res.json();
+    console.error('chat 조회 실패' + error);
+  }
 
   const data = await res.json();
   return data.messages as { role: 'user' | 'assistant'; content: string }[];
@@ -52,22 +70,20 @@ export const postChatMessage = async (summaryId: string, question: string) => {
     body: JSON.stringify({ summaryId, question }),
   });
 
-  if (!res.ok) throw new Error('채팅 생성 실패');
+  if (!res.ok) {
+    const { error } = await res.json();
+    console.error('chat 생성 실패' + error);
+  }
 };
 
-export const postSummaryAndChat = async (id: string) => {
+export const updateSummarySaved = async (id: string, isSaved: boolean) => {
   const res = await fetch(`/api/summary/${id}/save`, {
-    method: 'POST',
+    method: 'PATCH',
+    body: JSON.stringify({ isSaved: !isSaved }),
   });
 
-  if (!res.ok) throw new Error('저장 실패');
-};
-
-export const getSummaryAndChat = async (
-  id: string
-): Promise<{ data: SaveSummaryAndChat[] }> => {
-  const res = await fetch(`/api/summary/${id}/save`);
-
-  if (!res.ok) throw new Error('저장 실패');
-  return res.json();
+  if (!res.ok) {
+    const { error } = await res.json();
+    console.error('summary 저장 실패' + error);
+  }
 };
