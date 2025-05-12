@@ -5,57 +5,23 @@ type Props = {
   params: Promise<{ id: string }>;
 };
 
-export async function GET(_req: NextRequest, { params }: Props) {
-  const { id: summaryId } = await params;
+export async function PATCH(req: NextRequest, { params }: Props) {
+  try {
+    const { id } = await params;
+    const body = await req.json();
+    const { isSaved } = body;
 
-  if (!summaryId) {
-    return NextResponse.json(
-      { error: 'summaryId가 누락되었습니다.' },
-      { status: 400 }
-    );
+    await db.summary.update({
+      where: { id },
+      data: { isSaved },
+    });
+
+    return NextResponse.json({}, { status: 200 });
+  } catch (err) {
+    console.error('PATCH /summary/[id] error:', err);
+    const errorMessage =
+      err instanceof Error ? err.message : '서버 오류가 발생했습니다.';
+
+    return NextResponse.json({ error: errorMessage }, { status: 500 });
   }
-
-  const summaryAndChat = await db.saveSummaryAndChat.findMany({
-    where: { summaryId },
-    orderBy: { createdAt: 'asc' },
-  });
-
-  if (!summaryAndChat.length) {
-    return NextResponse.json(
-      { error: '저장된 요약 및 채팅이 없습니다.' },
-      { status: 404 }
-    );
-  }
-
-  return NextResponse.json({ data: summaryAndChat }, { status: 200 });
-}
-
-export async function POST(_req: NextRequest, { params }: Props) {
-  const { id } = await params;
-  const summary = await db.summary.findUnique({
-    where: { id },
-  });
-
-  const messages = await db.chatMessage.findMany({
-    where: { summaryId: id },
-  });
-
-  if (!summary) {
-    return NextResponse.json(
-      { error: '요약을 찾지 못했습니다.' },
-      { status: 404 }
-    );
-  }
-
-  await db.saveSummaryAndChat.create({
-    data: {
-      summaryId: summary.id,
-      fileName: summary.fileName,
-      content: summary.content,
-      userId: summary.userId!,
-      messages: messages,
-    },
-  });
-
-  return NextResponse.json({}, { status: 201 });
 }
