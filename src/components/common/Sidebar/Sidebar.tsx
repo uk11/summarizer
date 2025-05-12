@@ -11,7 +11,7 @@ import { RiMenu3Fill } from 'react-icons/ri';
 import { RiMoreFill } from 'react-icons/ri';
 import { useRef, useState } from 'react';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
-import { getSummary, updateSummary } from '@/fetch';
+import { getSummary, updateSummaryFileName } from '@/fetch';
 import SummaryDropdown from './SummaryDropdown';
 
 export default function Sidebar() {
@@ -24,25 +24,35 @@ export default function Sidebar() {
   const queryClient = useQueryClient();
   const btnRefs = useRef<Record<string, HTMLButtonElement | null>>({});
 
-  const { data: summaries } = useQuery<Summary[]>({
+  const { data: summaries } = useQuery({
     queryKey: ['summaries'],
     queryFn: getSummary,
   });
 
   const { mutate } = useMutation({
     mutationFn: (data: { id: string; fileName: string }) =>
-      updateSummary(data.id, data.fileName),
+      updateSummaryFileName(data.id, data.fileName),
+
     onMutate: async (newSummary) => {
       await queryClient.cancelQueries({ queryKey: ['summaries'] });
 
-      const prevSummary = queryClient.getQueryData<Summary[]>(['summaries']);
+      const prevSummary = queryClient.getQueryData<{ data: Summary[] }>([
+        'summaries',
+      ]);
 
-      queryClient.setQueryData<Summary[]>(['summaries'], (currentSummaries) =>
-        currentSummaries?.map((summary) =>
-          summary.id === newSummary.id
-            ? { ...summary, fileName: newSummary.fileName }
-            : summary
-        )
+      queryClient.setQueryData<{ data: Summary[] }>(
+        ['summaries'],
+        (currentSummaries) => {
+          return (
+            currentSummaries && {
+              data: currentSummaries.data.map((summary) =>
+                summary.id === newSummary.id
+                  ? { ...summary, fileName: newSummary.fileName }
+                  : summary
+              ),
+            }
+          );
+        }
       );
 
       return { prevSummary };
@@ -51,7 +61,9 @@ export default function Sidebar() {
       queryClient.invalidateQueries({ queryKey: ['summaries'] });
       router.refresh();
     },
-    onError: (_err, _variables, ctx) => {
+
+    onError: (err, _variables, ctx) => {
+      console.error(err);
       queryClient.setQueryData(['summaries'], ctx?.prevSummary);
     },
   });
@@ -83,70 +95,73 @@ export default function Sidebar() {
         <div className='pl-[12px] pr-[10px] flex-1 overflow-y-auto pb-[20px]'>
           <ul>
             {summaries &&
-              summaries.map((data) => (
-                <li key={data.id}>
-                  <div
-                    className={clsx(
-                      'px-[8px] flex gap-[10px] justify-between items-center hover:bg-gray-200 hover:rounded-[8px] whitespace-nowrap',
-                      params.id === data.id && 'bg-gray-300 rounded-[8px]'
-                    )}
-                  >
-                    {isEditingId === data.id ? (
-                      <input
-                        value={editedFileName}
-                        onChange={(e) => setEditedFileName(e.target.value)}
-                        onKeyDown={(e) => {
-                          if (e.key === 'Enter') {
+              summaries.data
+                .filter((item) => !item.isSaved)
+                .map((data) => (
+                  <li key={data.id}>
+                    <div
+                      className={clsx(
+                        'px-[8px] flex justify-between items-center hover:bg-gray-200 hover:rounded-[8px] whitespace-nowrap',
+                        params.id === data.id && 'bg-gray-300 rounded-[8px]'
+                      )}
+                    >
+                      {isEditingId === data.id ? (
+                        <input
+                          value={editedFileName}
+                          onChange={(e) => setEditedFileName(e.target.value)}
+                          onKeyDown={(e) => {
+                            if (e.key === 'Enter') {
+                              setIsEditingId(null);
+                              mutate({ id: data.id, fileName: editedFileName });
+                            }
+                          }}
+                          onBlur={() => {
                             setIsEditingId(null);
                             mutate({ id: data.id, fileName: editedFileName });
-                          }
-                        }}
-                        onBlur={() => {
-                          setIsEditingId(null);
-                          mutate({ id: data.id, fileName: editedFileName });
-                        }}
-                        autoFocus
-                        className='w-full py-[8px] text-sm bg-white rounded px-4'
-                      />
-                    ) : (
-                      <Link
-                        className='w-full py-[8px] overflow-hidden'
-                        href={`/result/${data.id}`}
-                      >
-                        {data.fileName}
-                      </Link>
-                    )}
-
-                    <div className='relative'>
-                      <button
-                        className='cursor-pointer flex items-center'
-                        onClick={() =>
-                          setCurrentId(currentId === data.id ? null : data.id)
-                        }
-                        ref={(el) => {
-                          btnRefs.current[data.id] = el;
-                        }}
-                      >
-                        <RiMoreFill className='w-[24px] h-[24px] my-[8px] text-gray-600 hover:text-gray-900 hover:scale-110' />
-                      </button>
-
-                      {currentId === data.id && (
-                        <SummaryDropdown
-                          fileName={data.fileName}
-                          currentId={currentId}
-                          btnRef={{ current: btnRefs.current[data.id] }}
-                          setCurrentId={setCurrentId}
-                          onEdit={() => {
-                            setIsEditingId(data.id);
-                            setEditedFileName(data.fileName);
-                            setCurrentId(null);
                           }}
+                          autoFocus
+                          className='w-full py-[8px] text-sm bg-white rounded px-4'
                         />
+                      ) : (
+                        <Link
+                          className='w-full py-[8px] overflow-hidden'
+                          href={`/result/${data.id}`}
+                        >
+                          {data.fileName}
+                        </Link>
                       )}
+
+                      <div className='relative'>
+                        <button
+                          className='cursor-pointer flex items-center'
+                          onClick={() =>
+                            setCurrentId(currentId === data.id ? null : data.id)
+                          }
+                          ref={(el) => {
+                            btnRefs.current[data.id] = el;
+                          }}
+                        >
+                          <RiMoreFill className='w-[24px] h-[24px] my-[8px] text-gray-600 hover:text-gray-900 hover:scale-110' />
+                        </button>
+
+                        {currentId === data.id && (
+                          <SummaryDropdown
+                            fileName={data.fileName}
+                            isSaved={data.isSaved}
+                            currentId={currentId}
+                            btnRef={{ current: btnRefs.current[data.id] }}
+                            setCurrentId={setCurrentId}
+                            onEdit={() => {
+                              setIsEditingId(data.id);
+                              setEditedFileName(data.fileName);
+                              setCurrentId(null);
+                            }}
+                          />
+                        )}
+                      </div>
                     </div>
-                  </div>
-                </li>
-              ))}
+                  </li>
+                ))}
           </ul>
         </div>
       </div>
