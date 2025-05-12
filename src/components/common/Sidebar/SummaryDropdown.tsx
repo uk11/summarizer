@@ -8,15 +8,16 @@ import { RefObject, useLayoutEffect, useState } from 'react';
 import { createPortal } from 'react-dom';
 import { useOnClickOutside } from '@/hooks/useOutsideClick';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
-import { useRouter } from 'next/navigation';
+import { useParams, useRouter } from 'next/navigation';
 import { RiEdit2Line, RiDeleteBinLine, RiArchive2Line } from 'react-icons/ri';
-import { deleteSummary, postSummaryAndChat } from '@/fetch';
+import { deleteSummary, updateSummarySaved } from '@/fetch';
 import DeleteModal from './DeleteModal';
 import clsx from 'clsx';
 import SaveModal from './SaveModal';
 
 type Props = {
   fileName: string;
+  isSaved: boolean;
   currentId: string | null;
   btnRef: RefObject<HTMLButtonElement | null>;
   setCurrentId: (id: string | null) => void;
@@ -25,6 +26,7 @@ type Props = {
 
 export default function SummaryDropdown({
   fileName,
+  isSaved,
   currentId,
   btnRef,
   setCurrentId,
@@ -35,6 +37,7 @@ export default function SummaryDropdown({
 
   const queryClient = useQueryClient();
   const router = useRouter();
+  const params = useParams();
 
   const { refs, x, y, update } = useFloating({
     placement: 'bottom-end',
@@ -62,17 +65,31 @@ export default function SummaryDropdown({
 
   const { mutate: deleteMutate } = useMutation({
     mutationFn: deleteSummary,
+
     onSuccess: () => {
+      if (params.id === currentId) {
+        router.replace('/');
+      }
       setCurrentId(null);
-      router.replace('/');
       queryClient.invalidateQueries({ queryKey: ['summaries'] });
     },
   });
 
   const { mutate: saveMutate } = useMutation({
-    mutationFn: postSummaryAndChat,
+    mutationFn: ({
+      currentId,
+      isSaved,
+    }: {
+      currentId: string;
+      isSaved: boolean;
+    }) => updateSummarySaved(currentId, isSaved),
+
     onSuccess: () => {
+      if (params.id === currentId) {
+        router.replace('/');
+      }
       setCurrentId(null);
+      queryClient.invalidateQueries({ queryKey: ['summaries'] });
     },
   });
 
@@ -133,7 +150,7 @@ export default function SummaryDropdown({
           setIsSaveModalOpen(!isSaveModalOpen);
           setCurrentId(null);
         }}
-        onSave={() => currentId && saveMutate(currentId)}
+        onSave={() => currentId && saveMutate({ currentId, isSaved })}
       />
     </div>,
     document.body
