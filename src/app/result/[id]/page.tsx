@@ -8,10 +8,12 @@ type Props = {
 export default async function ResultPage({ params }: Props) {
   const { id } = await params;
 
-  const summary = await db.summary.findUniqueOrThrow({
+  const summary = await db.summary.findUnique({
     where: { id },
   });
 
+  console.log(summary);
+  if (!summary) return null;
   return (
     <div>
       <ResultClient summary={summary} />
