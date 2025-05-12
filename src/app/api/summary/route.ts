@@ -16,12 +16,14 @@ const openai = new OpenAI({
 
 export async function GET() {
   try {
-    const data = await getSummaries();
-    return NextResponse.json(data);
+    const summaries = await getSummaries();
+
+    return NextResponse.json({ data: summaries }, { status: 200 });
   } catch (err) {
-    const message =
-      err instanceof Error ? err.message : '서버 오류가 발생했습니다.';
-    return NextResponse.json({ error: message }, { status: 500 });
+    console.error('GET /summary Error:', err);
+    const errorMessage = (err as Error).message;
+
+    return NextResponse.json({ error: errorMessage }, { status: 500 });
   }
 }
 
@@ -55,11 +57,12 @@ export async function POST(req: NextRequest) {
       },
     });
 
-    return NextResponse.json({ id: saved.id });
+    return NextResponse.json({ id: saved.id }, { status: 201 });
   } catch (err) {
-    const message =
-      err instanceof Error ? err.message : '서버 오류가 발생했습니다.';
-    return NextResponse.json({ error: message }, { status: 500 });
+    console.error('POST /summary Error:', err);
+    const errorMessage = (err as Error).message;
+
+    return NextResponse.json({ error: errorMessage }, { status: 500 });
   }
 }
 

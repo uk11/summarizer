@@ -5,36 +5,37 @@ type Props = {
   params: Promise<{ id: string }>;
 };
 
-export async function DELETE(_req: NextRequest, { params }: Props) {
-  const { id } = await params;
+export async function PATCH(req: NextRequest, { params }: Props) {
   try {
+    const { id } = await params;
+    const body = await req.json();
+    const { fileName } = body;
+
+    await db.summary.update({
+      where: { id },
+      data: { fileName },
+    });
+
+    return NextResponse.json({}, { status: 200 });
+  } catch (err) {
+    console.error('PATCH /summary/[id] Error:', err);
+    const errorMessage = (err as Error).message;
+
+    return NextResponse.json({ error: errorMessage }, { status: 500 });
+  }
+}
+
+export async function DELETE(_req: NextRequest, { params }: Props) {
+  try {
+    const { id } = await params;
+
     await db.summary.delete({ where: { id } });
 
     return NextResponse.json({}, { status: 200 });
   } catch (err) {
-    const message =
-      err instanceof Error ? err.message : '서버 오류가 발생했습니다.';
+    console.error('DELETE /summary/[id] Error:', err);
+    const errorMessage = (err as Error).message;
 
-    return NextResponse.json({ error: message }, { status: 500 });
+    return NextResponse.json({ error: errorMessage }, { status: 500 });
   }
-}
-
-export async function PATCH(req: NextRequest, { params }: Props) {
-  const { id } = await params;
-  const body = await req.json();
-  const { fileName } = body;
-
-  if (!id || !fileName) {
-    return NextResponse.json(
-      { error: 'id 또는 파일명이 없습니다.' },
-      { status: 400 }
-    );
-  }
-
-  await db.summary.update({
-    where: { id },
-    data: { fileName },
-  });
-
-  return NextResponse.json({}, { status: 200 });
 }

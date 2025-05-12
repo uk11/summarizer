@@ -18,9 +18,8 @@ export async function PATCH(req: NextRequest, { params }: Props) {
 
     return NextResponse.json({}, { status: 200 });
   } catch (err) {
-    console.error('PATCH /summary/[id] error:', err);
-    const errorMessage =
-      err instanceof Error ? err.message : '서버 오류가 발생했습니다.';
+    console.error('PATCH /summary/[id]/save Error:', err);
+    const errorMessage = (err as Error).message;
 
     return NextResponse.json({ error: errorMessage }, { status: 500 });
   }
