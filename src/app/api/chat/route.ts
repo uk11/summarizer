@@ -11,14 +11,6 @@ export async function POST(req: NextRequest) {
   try {
     const { summaryId, question } = await req.json();
 
-    if (!summaryId || !question) {
-      return NextResponse.json(
-        { error: 'summaryId와 question은 필수입니다.' },
-        { status: 400 }
-      );
-    }
-
-    // 요약 내용 조회
     const summary = await db.summary.findUnique({
       where: { id: summaryId },
       select: { content: true },
@@ -31,20 +23,18 @@ export async function POST(req: NextRequest) {
       );
     }
 
-    // 이전 대화 메시지 조회
-    const prevMessages = await db.chatMessage.findMany({
+    const prevChatMessages = await db.chatMessage.findMany({
       where: { summaryId },
       orderBy: { createdAt: 'asc' },
     });
 
-    const messages = prevMessages.map((msg) => ({
+    const messages = prevChatMessages.map((msg) => ({
       role: msg.role as 'user' | 'assistant',
       content: msg.content,
     }));
 
     const answer = await generateAnswer(summary.content, question, messages);
 
-    // 질문, 답변 저장
     await db.chatMessage.createMany({
       data: [
         {
@@ -60,10 +50,12 @@ export async function POST(req: NextRequest) {
       ],
     });
 
-    return NextResponse.json({}, { status: 200 });
-  } catch (error) {
-    console.error('Chat API Error', error);
-    return NextResponse.json({ error: 'Server Error' }, { status: 500 });
+    return NextResponse.json({}, { status: 201 });
+  } catch (err) {
+    console.error('POST /chat Error:', err);
+    const errorMessage = (err as Error).message;
+
+    return NextResponse.json({ error: errorMessage }, { status: 500 });
   }
 }
 

@@ -6,19 +6,19 @@ type Props = {
 };
 
 export async function GET(_req: NextRequest, { params }: Props) {
-  const { id: summaryId } = await params;
+  try {
+    const { id: summaryId } = await params;
 
-  if (!summaryId) {
-    return NextResponse.json(
-      { error: 'summaryId가 누락되었습니다.' },
-      { status: 400 }
-    );
+    const chatMessages = await db.chatMessage.findMany({
+      where: { summaryId },
+      orderBy: { createdAt: 'asc' },
+    });
+
+    return NextResponse.json({ chatMessages }, { status: 200 });
+  } catch (err) {
+    console.error('GET /chat/[id] Error:', err);
+    const errorMessage = (err as Error).message;
+
+    return NextResponse.json({ error: errorMessage }, { status: 500 });
   }
-
-  const messages = await db.chatMessage.findMany({
-    where: { summaryId },
-    orderBy: { createdAt: 'asc' },
-  });
-
-  return NextResponse.json({ messages });
 }
