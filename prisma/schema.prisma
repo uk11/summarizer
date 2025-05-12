@@ -15,6 +15,7 @@ model Summary {
   userId       String?
   anonymousId  String?
   createdAt    DateTime      @default(now())
+  updatedAt    DateTime      @default(now())
   chatMessages ChatMessage[]
   user         User?         @relation(fields: [userId], references: [id])
 }

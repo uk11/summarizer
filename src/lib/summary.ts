@@ -1,16 +1,15 @@
 import { authOptions } from './authOptions';
-import type { Summary } from '@prisma/client';
 import { getServerSession } from 'next-auth';
 import { getAnonymousId } from './auth';
 import { db } from './prisma';
 
-export async function getSummaries(): Promise<Summary[]> {
+export async function getSummaries() {
   const session = await getServerSession(authOptions);
 
-  if (session?.user?.id) {
+  if (session?.user.id) {
     return db.summary.findMany({
       where: { userId: session.user.id },
-      orderBy: { createdAt: 'desc' },
+      orderBy: { updatedAt: 'desc' },
     });
   }
 
@@ -19,7 +18,7 @@ export async function getSummaries(): Promise<Summary[]> {
   if (anonymousId) {
     return db.summary.findMany({
       where: { anonymousId },
-      orderBy: { createdAt: 'desc' },
+      orderBy: { updatedAt: 'desc' },
     });
   }
 
