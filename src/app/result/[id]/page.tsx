@@ -12,8 +12,8 @@ export default async function ResultPage({ params }: Props) {
     where: { id },
   });
 
-  console.log(summary);
   if (!summary) return null;
+
   return (
     <div>
       <ResultClient summary={summary} />
