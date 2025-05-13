@@ -23,14 +23,18 @@ export default function DeleteModal({
   return createPortal(
     <div className='fixed inset-0 bg-black/40 flex justify-center items-center'>
       <div
-        className='bg-white flex justify-center items-center flex-col px-[20px] py-[30px] rounded-[10px] gap-[12px]'
+        className='bg-white flex justify-center flex-col px-[20px] py-[20px] rounded-[10px]'
         ref={targetRef}
       >
-        <span>
-          <span className='font-semibold'>{fileName}</span> 파일을
-          삭제하시겠습니까?
-        </span>
-        <div className='flex justify-end  w-full gap-[10px]'>
+        <div className='mb-[10px]'>
+          <p>
+            <span className='font-semibold'>{fileName}</span> 파일을
+            삭제하시겠습니까?
+          </p>
+          <p>삭제 시 채팅 목록 및 저장 목록에서 제거됩니다.</p>
+        </div>
+
+        <div className='flex justify-end w-full gap-[10px]'>
           <button className='basic-btn' onClick={onClose}>
             취소
           </button>
