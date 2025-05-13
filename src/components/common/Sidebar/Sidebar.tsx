@@ -133,7 +133,7 @@ export default function Sidebar() {
 
                       <div className='relative'>
                         <button
-                          className='cursor-pointer flex items-center'
+                          className='flex items-center'
                           onClick={() =>
                             setCurrentId(currentId === data.id ? null : data.id)
                           }

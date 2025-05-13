@@ -14,6 +14,8 @@ import { deleteSummary, updateSummarySaved } from '@/fetch';
 import DeleteModal from './DeleteModal';
 import clsx from 'clsx';
 import SaveModal from './SaveModal';
+import { useSession } from 'next-auth/react';
+import { useToast } from '@/hooks/useToast';
 
 type Props = {
   fileName: string;
@@ -34,10 +36,11 @@ export default function SummaryDropdown({
 }: Props) {
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
   const [isSaveModalOpen, setIsSaveModalOpen] = useState(false);
-
   const queryClient = useQueryClient();
   const router = useRouter();
   const params = useParams();
+  const { status } = useSession();
+  const { showToast } = useToast();
 
   const { refs, x, y, update } = useFloating({
     placement: 'bottom-end',
@@ -72,6 +75,7 @@ export default function SummaryDropdown({
       }
       setCurrentId(null);
       queryClient.invalidateQueries({ queryKey: ['summaries'] });
+      showToast('삭제되었습니다.', 'success');
     },
   });
 
@@ -90,6 +94,7 @@ export default function SummaryDropdown({
       }
       setCurrentId(null);
       queryClient.invalidateQueries({ queryKey: ['summaries'] });
+      showToast('저장되었습니다.', 'success');
     },
   });
 
@@ -118,10 +123,15 @@ export default function SummaryDropdown({
 
         <button
           className='w-full flex items-center px-[8px] py-[6px] gap-[10px] hover:bg-gray-100 hover:rounded-[8px]'
-          onClick={() => setIsSaveModalOpen(!isSaveModalOpen)}
+          onClick={() => {
+            if (status === 'unauthenticated') {
+              setCurrentId(null);
+              showToast('로그인 사용자만 저장할 수 있습니다.', 'error');
+            } else setIsSaveModalOpen(!isSaveModalOpen);
+          }}
         >
           <RiArchive2Line className='w-[20px] h-[20px]' />
-          저장히기
+          저장하기
         </button>
 
         <button
@@ -133,25 +143,33 @@ export default function SummaryDropdown({
         </button>
       </div>
 
-      <DeleteModal
-        isOpen={isDeleteModalOpen}
-        fileName={fileName}
-        onClose={() => {
-          setIsDeleteModalOpen(!isDeleteModalOpen);
-          setCurrentId(null);
-        }}
-        onDelete={() => currentId && deleteMutate(currentId)}
-      />
+      {isDeleteModalOpen && (
+        <DeleteModal
+          isOpen={isDeleteModalOpen}
+          fileName={fileName}
+          onClose={() => {
+            setIsDeleteModalOpen(!isDeleteModalOpen);
+            setCurrentId(null);
+          }}
+          onDelete={() => currentId && deleteMutate(currentId)}
+        />
+      )}
 
-      <SaveModal
-        isOpen={isSaveModalOpen}
-        fileName={fileName}
-        onClose={() => {
-          setIsSaveModalOpen(!isSaveModalOpen);
-          setCurrentId(null);
-        }}
-        onSave={() => currentId && saveMutate({ currentId, isSaved })}
-      />
+      {isSaveModalOpen && (
+        <SaveModal
+          isOpen={isSaveModalOpen}
+          fileName={fileName}
+          onClose={() => {
+            setIsSaveModalOpen(!isSaveModalOpen);
+            setCurrentId(null);
+          }}
+          onSave={() => {
+            if (currentId) {
+              saveMutate({ currentId, isSaved });
+            }
+          }}
+        />
+      )}
     </div>,
     document.body
   );
