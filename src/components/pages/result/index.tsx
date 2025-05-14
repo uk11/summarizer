@@ -8,7 +8,7 @@ type Props = {
 
 export default function ResultClient({ summary }: Props) {
   return (
-    <div className='p-[16px] flex gap-[10px] h-[calc(100vh-60px)]'>
+    <div className='p-[16px] flex gap-[10px] h-[calc(100vh-60px)] text-primary'>
       <SummaryResult summary={summary} />
       <SummaryChat summary={summary} />
     </div>
