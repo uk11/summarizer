@@ -13,7 +13,7 @@ export async function PATCH(req: NextRequest, { params }: Props) {
 
     await db.summary.update({
       where: { id },
-      data: { isSaved },
+      data: { isSaved, updatedAt: new Date() },
     });
 
     return NextResponse.json({}, { status: 200 });
