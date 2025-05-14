@@ -9,6 +9,7 @@ import UserInfoModal from './UserInfoModal';
 import { RiMenu3Fill } from 'react-icons/ri';
 import { useAtom } from 'jotai';
 import { isSidebarOpenAtom } from '@/store';
+import LogoSvg from '@/components/svg-components/LogoSvg';
 
 export default function Header() {
   const [isLoginModalOpen, setIsLoginModalOpen] = useState(false);
@@ -25,7 +26,7 @@ export default function Header() {
   };
 
   return (
-    <header className='h-[60px] flex items-center justify-between px-[16px] border-b bg-white sticky top-0'>
+    <header className='h-[60px] flex items-center justify-between px-[16px] border-b border-blue-100 shadow-xs shadow-blue-100'>
       <div className='flex gap-[16px]'>
         {!isSidebarOpen && (
           <button
@@ -36,7 +37,7 @@ export default function Header() {
           </button>
         )}
         <Link href='/' className='text-[20px] font-bold'>
-          Summarizer
+          <LogoSvg />
         </Link>
       </div>
 
@@ -52,10 +53,7 @@ export default function Header() {
           className='rounded-full cursor-pointer mr-[4px]'
         />
       ) : (
-        <button
-          className='rounded px-3 py-1 border text-gray-600 hover:bg-gray-100 cursor-pointer mr-[4px]'
-          onClick={handleLoginModalClick}
-        >
+        <button className='blue-btn mr-[4px]' onClick={handleLoginModalClick}>
           로그인
         </button>
       )}

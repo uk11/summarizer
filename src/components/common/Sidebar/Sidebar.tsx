@@ -71,7 +71,7 @@ export default function Sidebar() {
   return (
     <div
       className={clsx(
-        'fixed h-screen overflow-hidden bg-gray-100 duration-600',
+        'fixed h-screen overflow-hidden bg-[#f8f8f8] duration-600',
         isSidebarOpen ? 'w-[260px]' : 'w-0'
       )}
     >
@@ -81,14 +81,14 @@ export default function Sidebar() {
             className='p-[4px] hover:bg-gray-200 hover:rounded-[6px]'
             onClick={() => setIsSidebarOpen(false)}
           >
-            <RiMenu3Fill className='w-[24px] h-[24px] cursor-pointer' />
+            <RiMenu3Fill className='w-[24px] h-[24px] cursor-pointer text-[#555555]' />
           </button>
 
           <button
             className='p-[4px] hover:bg-gray-200 hover:rounded-[6px]'
             onClick={() => router.push('/')}
           >
-            <RiStickyNoteAddLine className='w-[24px] h-[24px] cursor-pointer' />
+            <RiStickyNoteAddLine className='w-[24px] h-[24px] cursor-pointer text-[#555555]' />
           </button>
         </div>
 
@@ -101,7 +101,7 @@ export default function Sidebar() {
                   <li key={data.id}>
                     <div
                       className={clsx(
-                        'px-[8px] flex justify-between items-center hover:bg-gray-200 hover:rounded-[8px] whitespace-nowrap',
+                        'px-[8px] flex justify-between items-center hover:bg-gray-200 hover:rounded-[8px] whitespace-nowrap gap-[6px]',
                         params.id === data.id && 'bg-gray-300 rounded-[8px]'
                       )}
                     >
