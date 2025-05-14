@@ -93,7 +93,7 @@ export default function Sidebar() {
         </div>
 
         <div className='pl-[12px] pr-[10px] flex-1 overflow-y-auto pb-[20px]'>
-          <ul>
+          <ul className='flex flex-col gap-[1px]'>
             {summaries &&
               summaries.data
                 .filter((item) => !item.isSaved)
@@ -101,8 +101,9 @@ export default function Sidebar() {
                   <li key={data.id}>
                     <div
                       className={clsx(
-                        'px-[8px] flex justify-between items-center hover:bg-gray-200 hover:rounded-[8px] whitespace-nowrap gap-[6px]',
-                        params.id === data.id && 'bg-gray-300 rounded-[8px]'
+                        'px-[8px] flex justify-between items-center rounded-[8px] hover:bg-gray-200 hover:rounded-[8px] whitespace-nowrap gap-[6px]',
+                        params.id === data.id && 'bg-gray-300 rounded-[8px]',
+                        currentId === data.id && 'bg-gray-200'
                       )}
                     >
                       {isEditingId === data.id ? (
@@ -113,14 +114,16 @@ export default function Sidebar() {
                             if (e.key === 'Enter') {
                               setIsEditingId(null);
                               mutate({ id: data.id, fileName: editedFileName });
+                              setEditedFileName('');
                             }
                           }}
                           onBlur={() => {
                             setIsEditingId(null);
                             mutate({ id: data.id, fileName: editedFileName });
+                            setEditedFileName('');
                           }}
                           autoFocus
-                          className='w-full py-[8px] text-sm bg-white rounded px-4'
+                          className='py-[8px] pl-[10px] pr-[18px] mx-[-8px] rounded-[8px] focus:outline-none bg-gray-200'
                         />
                       ) : (
                         <Link
@@ -141,7 +144,12 @@ export default function Sidebar() {
                             btnRefs.current[data.id] = el;
                           }}
                         >
-                          <RiMoreFill className='w-[24px] h-[24px] my-[8px] text-gray-600 hover:text-gray-900 hover:scale-110' />
+                          <RiMoreFill
+                            className={clsx(
+                              'w-[24px] h-[24px] my-[8px] text-gray-600 hover:text-gray-900 hover:scale-110',
+                              isEditingId === data.id && 'hidden'
+                            )}
+                          />
                         </button>
 
                         {currentId === data.id && (
