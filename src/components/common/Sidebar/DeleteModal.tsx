@@ -38,7 +38,8 @@ export default function DeleteModal({
           <button className='basic-btn' onClick={onClose}>
             취소
           </button>
-          <button className='basic-btn' onClick={onDelete}>
+
+          <button className='basic-red-btn' onClick={onDelete}>
             삭제
           </button>
         </div>

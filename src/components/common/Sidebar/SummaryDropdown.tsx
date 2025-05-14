@@ -135,7 +135,7 @@ export default function SummaryDropdown({
         </button>
 
         <button
-          className='w-full flex items-center px-[8px] py-[6px] gap-[10px] hover:bg-gray-100 hover:rounded-[8px]'
+          className='w-full flex items-center px-[8px] py-[6px] gap-[10px] text-red-500 hover:bg-red-50 hover:rounded-[8px]'
           onClick={() => setIsDeleteModalOpen(!isDeleteModalOpen)}
         >
           <RiDeleteBinLine className='w-[20px] h-[20px]' />
