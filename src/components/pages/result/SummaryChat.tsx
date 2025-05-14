@@ -26,7 +26,7 @@ export default function SummaryChat({ summary }: Props) {
         {
           id: 'default',
           role: 'assistant',
-          content: '안녕하세요! 요약을 읽고 궁금한 점이 있다면 알려주세요',
+          content: '안녕하세요! 요약을 읽고 궁금한 점이 있다면 알려주세요.',
         },
         ...chatMessages,
       ] as { id: string; role: 'user' | 'assistant'; content: string }[],
@@ -79,12 +79,15 @@ export default function SummaryChat({ summary }: Props) {
   };
 
   return (
-    <div className='flex flex-col flex-[6] p-[10px] pr-0 pt-0 border'>
+    <div className='flex flex-col flex-[6] p-[16px] pr-0 border border-gray-300 shadow-gray-300 shadow-sm rounded-[8px] bg-white'>
       <div
-        className='flex-1 overflow-y-auto scrollbar-stable pr-[6px] pt-[10px]'
+        className='flex-1 overflow-y-auto scrollbar-stable pr-[6px]'
         ref={scrollRef}
       >
-        <div className='text-[20px] font-semibold mb-[8px]'>채팅</div>
+        <div className='text-[20px] font-semibold mb-[2px] text-black'>
+          채팅
+        </div>
+
         {chatMessages &&
           chatMessages.map((msg) => (
             <div
@@ -106,8 +109,9 @@ export default function SummaryChat({ summary }: Props) {
       </div>
 
       {summary.isSaved ? (
-        <div className='flex items-center justify-center gap-[10px]'>
-          <div>채팅을 이어서 하려면 저장을 취소하세요.</div>
+        <div className='flex items-center justify-center gap-[20px]'>
+          <p>채팅을 이어서 하려면 저장을 취소하세요.</p>
+
           <button
             className='basic-btn'
             onClick={() =>
@@ -117,7 +121,7 @@ export default function SummaryChat({ summary }: Props) {
               })
             }
           >
-            저장 취소하기
+            저장 취소
           </button>
         </div>
       ) : (
@@ -127,12 +131,13 @@ export default function SummaryChat({ summary }: Props) {
             value={questionInput}
             onChange={(e) => setQuestionInput(e.target.value)}
             onKeyDown={(e) => e.key === 'Enter' && handleSubmitQuestion()}
-            className='flex-1 border rounded p-[8px]'
+            className='flex-1 border border-gray-400 rounded-[6px] p-[8px] shadow-gray-200 shadow-md placeholder:text-gray-400 focus:outline-none '
             placeholder='무엇이든 물어보세요.'
           />
+
           <button
+            className='blue-btn px-[16px] py-[8px] disabled:opacity-50'
             onClick={handleSubmitQuestion}
-            className='bg-black text-white rounded px-4 py-2 disabled:opacity-50'
             disabled={isPending}
           >
             전송
