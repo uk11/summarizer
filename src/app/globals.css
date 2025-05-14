@@ -31,7 +31,15 @@
 
 @layer components {
   .basic-btn {
-    @apply border border-black px-[10px] rounded-[4px];
+    @apply border border-gray-300 px-[12px] py-[2px] rounded-[6px] hover:bg-gray-100 shadow-gray-200 shadow-md;
+  }
+
+  .basic-red-btn {
+    @apply border border-red-500 bg-red-500 text-white px-[12px] py-[2px] rounded-[6px] hover:bg-red-400 hover:border-red-400 shadow-red-200 shadow-md;
+  }
+
+  .blue-btn {
+    @apply border border-blue-500 bg-blue-500 text-white px-[12px] py-[3px] rounded-[6px] hover:bg-blue-400 hover:border-blue-400 shadow-blue-200 shadow-md;
   }
 }
 
