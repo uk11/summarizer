@@ -17,12 +17,12 @@ export default function Toast({ message, type }: Props) {
   return createPortal(
     <div
       className={clsx(
-        'fixed top-30 right-20 z-50 px-[10px] py-[8px] rounded text-white min-w-[400px] toast',
+        'fixed top-30 right-20 z-50 px-[10px] py-[8px] rounded text-white w-[400px] toast',
         type === 'success' && 'bg-green-500',
         type === 'error' && 'bg-red-500'
       )}
     >
-      <div className='flex items-center gap-[4px]'>
+      <div className='flex items-center gap-[8px]'>
         {type && typeIcon[type]}
         {message}
       </div>
