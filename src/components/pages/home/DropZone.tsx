@@ -6,6 +6,7 @@ import { useRouter } from 'next/navigation';
 import { useDropzone, FileWithPath } from 'react-dropzone';
 import Spinner from '@/components/common/Spinner';
 import clsx from 'clsx';
+import FileUploadSvg from '@/components/svg-components/FileUploadSvg';
 
 const Dropzone = () => {
   const router = useRouter();
@@ -30,13 +31,21 @@ const Dropzone = () => {
     <div
       {...getRootProps()}
       className={clsx(
-        'flex justify-center items-center w-[800px] h-[300px] mt-[100px] border-2 border-dashed border-blue-500 rounded-xl cursor-pointer hover:bg-blue-50',
+        'flex flex-col justify-center items-center w-[800px] h-[300px] mt-[40px] rounded-[12px] cursor-pointer hover:bg-blue-50',
+        'border-2 border-dashed border-blue-500 shadow-lg shadow-blue-100',
         isDragActive && 'bg-blue-50'
       )}
     >
       <input {...getInputProps()} />
 
-      <p>파일을 드래그하거나 클릭해서 업로드하세요.</p>
+      <div className='flex flex-col items-center'>
+        <div className='mb-[10px]'>
+          <FileUploadSvg />
+        </div>
+        <p className='text-xl'>
+          파일을 드래그하거나 이곳을 클릭해서 업로드하세요.
+        </p>
+      </div>
 
       {isPending && <Spinner />}
     </div>
