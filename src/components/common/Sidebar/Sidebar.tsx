@@ -13,16 +13,24 @@ import { useRef, useState } from 'react';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { getSummary, updateSummaryFileName } from '@/fetch';
 import SummaryDropdown from './SummaryDropdown';
+import { useMediaQuery } from 'react-responsive';
+import { useOnClickOutside } from '@/hooks/useOutsideClick';
 
 export default function Sidebar() {
   const params = useParams();
   const router = useRouter();
+  const queryClient = useQueryClient();
+  const btnRefs = useRef<Record<string, HTMLButtonElement | null>>({});
+  const isMobile = useMediaQuery({ maxWidth: 767 });
+
   const [isSidebarOpen, setIsSidebarOpen] = useAtom(isSidebarOpenAtom);
   const [currentId, setCurrentId] = useState<string | null>(null);
   const [isEditingId, setIsEditingId] = useState<string | null>(null);
   const [editedFileName, setEditedFileName] = useState('');
-  const queryClient = useQueryClient();
-  const btnRefs = useRef<Record<string, HTMLButtonElement | null>>({});
+
+  const { targetRef } = useOnClickOutside({
+    onClickOutside: () => isMobile && setIsSidebarOpen(false),
+  });
 
   const { data: summaries } = useQuery({
     queryKey: ['summaries'],
@@ -72,11 +80,12 @@ export default function Sidebar() {
     <div
       className={clsx(
         'fixed h-screen overflow-hidden bg-[#f8f8f8] duration-600',
-        isSidebarOpen ? 'w-[260px]' : 'w-0'
+        isSidebarOpen ? 'w-[260px] max-md:w-[75vw]' : 'w-0'
       )}
+      ref={targetRef}
     >
-      <div className='w-[260px] flex flex-col h-screen'>
-        <div className='h-[60px] flex items-center justify-between px-[16px]'>
+      <div className='w-[260px] flex flex-col h-screen max-md:w-[75vw]'>
+        <div className='h-[60px] flex items-center justify-between px-[16px] '>
           <button
             className='p-[4px] hover:bg-gray-200 hover:rounded-[6px]'
             onClick={() => setIsSidebarOpen(false)}
@@ -113,7 +122,10 @@ export default function Sidebar() {
                           onKeyDown={(e) => {
                             if (e.key === 'Enter') {
                               setIsEditingId(null);
-                              mutate({ id: data.id, fileName: editedFileName });
+                              mutate({
+                                id: data.id,
+                                fileName: editedFileName,
+                              });
                               setEditedFileName('');
                             }
                           }}
@@ -129,6 +141,9 @@ export default function Sidebar() {
                         <Link
                           className='w-full py-[8px] overflow-hidden'
                           href={`/result/${data.id}`}
+                          onClick={() =>
+                            isMobile && setIsSidebarOpen(!isSidebarOpen)
+                          }
                         >
                           {data.fileName}
                         </Link>
