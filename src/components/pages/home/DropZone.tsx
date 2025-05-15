@@ -33,16 +33,18 @@ const Dropzone = () => {
       className={clsx(
         'flex flex-col justify-center items-center w-[800px] h-[300px] mt-[40px] rounded-[12px] cursor-pointer hover:bg-blue-50',
         'border-2 border-dashed border-blue-500 shadow-lg shadow-blue-100',
+        'max-md:w-full max-md:h-[250px]',
         isDragActive && 'bg-blue-50'
       )}
     >
       <input {...getInputProps()} />
 
       <div className='flex flex-col items-center'>
-        <div className='mb-[10px]'>
+        <div className='mb-[20px] max-md:mb-[10px] max-md:scale-90 max-md:z-[-1]'>
           <FileUploadSvg />
         </div>
-        <p className='text-xl'>
+
+        <p className='text-xl max-md:text-base'>
           파일을 드래그하거나 이곳을 클릭해서 업로드하세요.
         </p>
       </div>
