@@ -5,6 +5,7 @@ import { useOnClickOutside } from '@/hooks/useOutsideClick';
 import KakaoIconSvg from '@/components/svg-components/KakaoIconSvg';
 import GoogleIconSvg from '@/components/svg-components/GoogleIconSvg';
 import LoginLogoSvg from '@/components/svg-components/LoginLogoSvg';
+import clsx from 'clsx';
 
 type Props = {
   isOpen: boolean;
@@ -21,7 +22,10 @@ export default function LoginModal({ isOpen, onClose }: Props) {
   return createPortal(
     <div className='fixed inset-0 bg-black/40 flex justify-center items-center'>
       <div
-        className='w-[370px] bg-white flex justify-center items-center flex-col px-[20px] py-[20px] rounded-[10px]'
+        className={clsx(
+          'w-[370px] bg-white flex justify-center items-center flex-col px-[20px] py-[20px] rounded-[10px]',
+          'max-md:w-[100%] max-md:mx-[16px]'
+        )}
         ref={targetRef}
       >
         <div className='relative w-full'>
