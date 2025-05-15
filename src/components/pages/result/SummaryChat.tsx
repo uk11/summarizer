@@ -4,8 +4,9 @@ import clsx from 'clsx';
 import { getChatMessages, postChatMessage, updateSummarySaved } from '@/fetch';
 import { Summary } from '@prisma/client';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
-import { useEffect, useRef, useState } from 'react';
+import { useState } from 'react';
 import { useRouter } from 'next/navigation';
+import useBottomScroll from '@/hooks/useBottomScroll';
 
 type Props = {
   summary: Summary;
@@ -15,8 +16,6 @@ export default function SummaryChat({ summary }: Props) {
   const [questionInput, setQuestionInput] = useState('');
   const router = useRouter();
   const queryClient = useQueryClient();
-  const scrollRef = useRef<HTMLDivElement>(null);
-  const prevLength = useRef<number | null>(null);
 
   const { data: chatMessages } = useQuery({
     queryKey: ['summaryChat', summary.id],
@@ -31,6 +30,8 @@ export default function SummaryChat({ summary }: Props) {
         ...chatMessages,
       ] as { id: string; role: 'user' | 'assistant'; content: string }[],
   });
+
+  const { scrollRef } = useBottomScroll(chatMessages!);
 
   const { mutate: postMutate, isPending } = useMutation({
     mutationFn: ({
@@ -61,17 +62,6 @@ export default function SummaryChat({ summary }: Props) {
     },
   });
 
-  useEffect(() => {
-    if (!scrollRef.current || !chatMessages) return;
-
-    scrollRef.current.scrollTo({
-      top: scrollRef.current.scrollHeight,
-      behavior: prevLength.current === null ? 'auto' : 'smooth',
-    });
-
-    prevLength.current = chatMessages.length;
-  }, [chatMessages]);
-
   const handleSubmitQuestion = () => {
     if (!questionInput.trim()) return;
     setQuestionInput('');
@@ -79,9 +69,9 @@ export default function SummaryChat({ summary }: Props) {
   };
 
   return (
-    <div className='flex flex-col flex-[6] p-[16px] pr-0 border border-gray-300 shadow-gray-300 shadow-sm rounded-[8px] bg-white'>
+    <div className='flex flex-col flex-[6] p-[16px] md:pr-0 border border-gray-300 shadow-gray-300 shadow-sm rounded-[8px] bg-white'>
       <div
-        className='flex-1 overflow-y-auto scrollbar-stable pr-[6px]'
+        className='flex-1 md:overflow-y-auto scrollbar-stable md:pr-[6px]'
         ref={scrollRef}
       >
         <div className='text-[20px] font-semibold mb-[2px] text-black'>
