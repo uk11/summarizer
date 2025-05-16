@@ -7,10 +7,16 @@ import { useDropzone, FileWithPath } from 'react-dropzone';
 import Spinner from '@/components/common/Spinner';
 import clsx from 'clsx';
 import FileUploadSvg from '@/components/svg-components/FileUploadSvg';
+import { useToast } from '@/hooks/useToast';
+import { useSession } from 'next-auth/react';
 
 const Dropzone = () => {
   const router = useRouter();
   const queryClient = useQueryClient();
+  const { showToast } = useToast();
+  const { status } = useSession();
+
+  const maxSize = status === 'authenticated' ? 5 * 1024 * 1024 : 500 * 1024;
 
   const { mutate, isPending } = useMutation({
     mutationFn: uploadAndSummary,
@@ -25,7 +31,22 @@ const Dropzone = () => {
     mutate(file);
   };
 
-  const { getRootProps, getInputProps, isDragActive } = useDropzone({ onDrop });
+  const onDropRejected = () => {
+    if (status === 'authenticated') {
+      showToast('5MB 미만의 파일만 업로드할 수 있습니다.', 'error');
+    } else {
+      showToast(
+        '비로그인 유저는 500KB 미만의 파일만 업로드할 수 있습니다.',
+        'error'
+      );
+    }
+  };
+
+  const { getRootProps, getInputProps, isDragActive } = useDropzone({
+    onDrop,
+    onDropRejected,
+    maxSize,
+  });
 
   return (
     <div
