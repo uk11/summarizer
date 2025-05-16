@@ -17,7 +17,8 @@ export default function Toast({ message, type }: Props) {
   return createPortal(
     <div
       className={clsx(
-        'fixed top-30 right-20 z-50 px-[10px] py-[8px] rounded text-white w-[400px] toast',
+        'fixed top-30 right-20 z-50 px-[10px] py-[10px] rounded-[8px] text-white w-[430px] toast',
+        'max-md:left-0 max-md:w-[calc(100%-20px)] max-md:mx-[10px]',
         type === 'success' && 'bg-green-500',
         type === 'error' && 'bg-red-500'
       )}
