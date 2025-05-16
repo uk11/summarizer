@@ -29,7 +29,9 @@ export default function Sidebar() {
   const [editedFileName, setEditedFileName] = useState('');
 
   const { targetRef } = useOnClickOutside({
-    onClickOutside: () => isMobile && setIsSidebarOpen(false),
+    onClickOutside: () => {
+      if (!currentId && isMobile) setIsSidebarOpen(false);
+    },
   });
 
   const { data: summaries } = useQuery({
@@ -79,7 +81,7 @@ export default function Sidebar() {
   return (
     <div
       className={clsx(
-        'fixed h-screen overflow-hidden bg-[#f8f8f8] duration-600',
+        'fixed h-screen overflow-hidden bg-[#f8f8f8] duration-600 max-md:shadow-neutral-200 max-md:shadow-[50px_0_100px_-30px_rgba(0_0_0_0.2)]',
         isSidebarOpen ? 'w-[260px] max-md:w-[75vw]' : 'w-0'
       )}
       ref={targetRef}

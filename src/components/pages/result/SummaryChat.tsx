@@ -69,11 +69,8 @@ export default function SummaryChat({ summary }: Props) {
   };
 
   return (
-    <div className='flex flex-col flex-[6] p-[16px] md:pr-0 border border-gray-300 shadow-gray-300 shadow-sm rounded-[8px] bg-white'>
-      <div
-        className='flex-1 md:overflow-y-auto scrollbar-stable md:pr-[6px]'
-        ref={scrollRef}
-      >
+    <div className='flex flex-col flex-[6] p-[16px] pr-[12px] border border-gray-300 shadow-gray-300 shadow-sm rounded-[8px] md:overflow-y-auto'>
+      <div className='flex-1' ref={scrollRef}>
         <div className='text-[20px] font-semibold mb-[2px] text-black'>
           채팅
         </div>
@@ -100,7 +97,10 @@ export default function SummaryChat({ summary }: Props) {
 
       {summary.isSaved ? (
         <div className='flex items-center justify-center gap-[20px]'>
-          <p>채팅을 이어서 하려면 저장을 취소하세요.</p>
+          <p>
+            채팅을 이어서 하려면 저장을{' '}
+            <span className='max-md:block'>취소하세요.</span>
+          </p>
 
           <button
             className='basic-btn'
@@ -115,7 +115,7 @@ export default function SummaryChat({ summary }: Props) {
           </button>
         </div>
       ) : (
-        <div className='flex items-center gap-[8px] mt-[8px] pr-[10px]'>
+        <div className='flex items-center gap-[8px] mt-[8px]'>
           <input
             type='text'
             value={questionInput}
