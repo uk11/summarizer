@@ -16,7 +16,7 @@ declare module 'next-auth' {
   }
 
   interface Profile {
-    email_verified?: boolean; // 여기에 직접 추가
+    email_verified?: boolean;
   }
 }
 

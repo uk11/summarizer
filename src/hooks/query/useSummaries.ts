@@ -1,5 +1,5 @@
 import { useQuery } from '@tanstack/react-query';
-import { getSummaries } from '@/fetch'; // 경로는 너 프로젝트에 맞게 수정
+import { getSummaries } from '@/fetch';
 
 export function useSummaries(isSaved: boolean) {
   return useQuery({
