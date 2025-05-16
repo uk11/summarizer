@@ -8,15 +8,45 @@ import { getServerSession } from 'next-auth';
 import { authOptions } from '@/lib/authOptions';
 import { cookies } from 'next/headers';
 import { v4 as uuidv4 } from 'uuid';
-import { getSummaries } from '@/lib/summary';
+import { getAnonymousId } from '@/lib/auth';
+import { Summary } from '@prisma/client';
 
 const openai = new OpenAI({
   apiKey: process.env.OPENAI_API_KEY,
 });
 
-export async function GET() {
+export async function GET(req: NextRequest) {
   try {
-    const summaries = await getSummaries();
+    const searchParams = req.nextUrl.searchParams.get('isSaved');
+    const isSaved =
+      searchParams === 'true'
+        ? true
+        : searchParams === 'false'
+        ? false
+        : undefined;
+
+    const session = await getServerSession(authOptions);
+
+    let summaries: Summary[] = [];
+
+    if (session?.user.id) {
+      summaries = await db.summary.findMany({
+        where: {
+          userId: session.user.id,
+          isSaved,
+        },
+        orderBy: { updatedAt: 'desc' },
+      });
+    } else {
+      const anonymousId = await getAnonymousId();
+
+      if (anonymousId) {
+        summaries = await db.summary.findMany({
+          where: { anonymousId },
+          orderBy: { updatedAt: 'desc' },
+        });
+      }
+    }
 
     return NextResponse.json({ data: summaries }, { status: 200 });
   } catch (err) {
