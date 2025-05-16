@@ -6,6 +6,7 @@ import KakaoIconSvg from '@/components/svg-components/KakaoIconSvg';
 import GoogleIconSvg from '@/components/svg-components/GoogleIconSvg';
 import LoginLogoSvg from '@/components/svg-components/LoginLogoSvg';
 import clsx from 'clsx';
+import { useRouter } from 'next/navigation';
 
 type Props = {
   isOpen: boolean;
@@ -13,9 +14,16 @@ type Props = {
 };
 
 export default function LoginModal({ isOpen, onClose }: Props) {
+  const router = useRouter();
+
   const { targetRef } = useOnClickOutside({
     onClickOutside: onClose,
   });
+
+  const handleLogin = (social: 'google' | 'kakao') => {
+    signIn(social);
+    router.push('/');
+  };
 
   if (!isOpen) return null;
 
@@ -45,7 +53,7 @@ export default function LoginModal({ isOpen, onClose }: Props) {
         <div className='flex flex-col gap-[8px] w-full my-[70px]'>
           <button
             className='border border-gray-300 px-[10px] py-[10px] rounded-[10px] flex hover:bg-gray-100 hover:border-gray-100'
-            onClick={() => signIn('google')}
+            onClick={() => handleLogin('google')}
           >
             <GoogleIconSvg />
 
@@ -56,7 +64,7 @@ export default function LoginModal({ isOpen, onClose }: Props) {
 
           <button
             className='bg-[#FFE34E] border border-[#FFE34E] px-[10px] py-[10px] rounded-[10px] flex hover:bg-[#F6D739]'
-            onClick={() => signIn('kakao')}
+            onClick={() => handleLogin('kakao')}
           >
             <KakaoIconSvg />
 

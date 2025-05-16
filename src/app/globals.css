@@ -27,6 +27,12 @@
   .toast {
     animation: toast 0.3s forwards;
   }
+
+  @media (max-width: 768px) {
+    .max-md\:shadow-r {
+      box-shadow: 50px 0 100px -20px rgba(0, 0, 0, 0.2);
+    }
+  }
 }
 
 @layer components {
@@ -78,7 +84,7 @@
 }
 
 ::-webkit-scrollbar {
-  width: 8px;
+  width: 6px;
 }
 
 ::-webkit-scrollbar-thumb {
