@@ -23,7 +23,7 @@ export default function SaveModal({
   return createPortal(
     <div className='fixed inset-0 bg-black/40 flex justify-center items-center'>
       <div
-        className='bg-white flex justify-center flex-col px-[20px] py-[20px] rounded-[10px]'
+        className='bg-white flex justify-center flex-col px-[20px] py-[20px] rounded-[10px] max-md:w-full max-md:mx-[20px]'
         ref={targetRef}
       >
         <div className='mb-[10px]'>
@@ -38,7 +38,7 @@ export default function SaveModal({
           <button className='basic-btn' onClick={onClose}>
             취소
           </button>
-          <button className='basic-btn' onClick={onSave}>
+          <button className='blue-btn' onClick={onSave}>
             저장
           </button>
         </div>
