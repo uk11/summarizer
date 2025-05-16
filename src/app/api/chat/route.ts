@@ -28,12 +28,32 @@ export async function POST(req: NextRequest) {
       orderBy: { createdAt: 'asc' },
     });
 
-    const messages = prevChatMessages.map((msg) => ({
-      role: msg.role as 'user' | 'assistant',
-      content: msg.content,
-    }));
+    const isFirstMessage = prevChatMessages.length === 0;
 
-    const answer = await generateAnswer(summary.content, question, messages);
+    const systemMessage = {
+      role: 'system' as const,
+      content: `아래 요약 내용을 참고하여 사용자의 질문에 답변하세요.\n\n요약 내용:\n${summary.content}`,
+    };
+
+    const messages: ChatCompletionMessageParam[] = [
+      ...(isFirstMessage ? [systemMessage] : []),
+      ...prevChatMessages.map((msg) => ({
+        role: msg.role as 'user' | 'assistant',
+        content: msg.content,
+      })),
+    ];
+
+    if (isFirstMessage) {
+      await db.chatMessage.create({
+        data: {
+          summaryId,
+          role: 'system',
+          content: systemMessage.content,
+        },
+      });
+    }
+
+    const answer = await generateAnswer(question, messages);
 
     await db.chatMessage.createMany({
       data: [
@@ -54,30 +74,17 @@ export async function POST(req: NextRequest) {
   } catch (err) {
     console.error('POST /chat Error:', err);
     const errorMessage = (err as Error).message;
-
     return NextResponse.json({ error: errorMessage }, { status: 500 });
   }
 }
 
-// GPT 답변 생성
 async function generateAnswer(
-  summaryContent: string,
   question: string,
   messages: ChatCompletionMessageParam[]
 ) {
   const gptMessages: ChatCompletionMessageParam[] = [
-    {
-      role: 'system',
-      content: `아래 요약 내용을 참고하여 사용자의 질문에 답변하세요.
-
-      요약 내용:
-      ${summaryContent}`,
-    },
     ...messages,
-    {
-      role: 'user',
-      content: question,
-    },
+    { role: 'user', content: question },
   ];
 
   const completion = await openai.chat.completions.create({

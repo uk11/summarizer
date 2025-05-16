@@ -10,7 +10,10 @@ export async function GET(_req: NextRequest, { params }: Props) {
     const { id: summaryId } = await params;
 
     const chatMessages = await db.chatMessage.findMany({
-      where: { summaryId },
+      where: {
+        summaryId,
+        NOT: { role: 'system' },
+      },
       orderBy: { createdAt: 'asc' },
     });
 
