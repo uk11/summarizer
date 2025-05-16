@@ -24,8 +24,8 @@ export default function UserInfoModal({ isOpen, onClose }: Props) {
   const { showToast } = useToast();
 
   const { data: summaries } = useQuery({
-    queryKey: ['summaries'],
-    queryFn: getSummary,
+    queryKey: ['summaries', true],
+    queryFn: () => getSummary(true),
   });
 
   const handleLogout = () => {
@@ -58,7 +58,7 @@ export default function UserInfoModal({ isOpen, onClose }: Props) {
   return createPortal(
     <div className='fixed inset-0 bg-black/40 flex justify-center items-center'>
       <div
-        className='bg-white flex justify-center flex-col px-[20px] py-[30px] rounded-[10px] w-[600px]'
+        className='bg-white flex justify-center flex-col px-[20px] py-[30px] rounded-[10px] w-[600px] max-md:w-full max-md:mx-[20px]'
         ref={targetRef}
       >
         <div className='mb-[26px]'>
@@ -89,46 +89,44 @@ export default function UserInfoModal({ isOpen, onClose }: Props) {
 
           <ul className='flex flex-col gap-[6px]'>
             {summaries &&
-              summaries.data
-                .filter((item) => item.isSaved)
-                .map((data) => (
-                  <li key={data.id} className='flex'>
-                    <div className='flex-1 text-blue-600'>
-                      <button
-                        onClick={() => handleNavigateToSummary(data.id)}
-                        className='text-left'
-                      >
-                        {data.fileName}
-                      </button>
-                    </div>
+              summaries.data.map((data) => (
+                <li key={data.id} className='flex'>
+                  <div className='flex-1 text-blue-600'>
+                    <button
+                      onClick={() => handleNavigateToSummary(data.id)}
+                      className='text-left pr-[10px]'
+                    >
+                      {data.fileName}
+                    </button>
+                  </div>
 
-                    <div className='flex flex-1 justify-between items-center'>
-                      <div>{formatDate(data.createdAt, 'YY년 MM월 DD일')}</div>
-                      <button
-                        className='mr-[10px] text-red-500'
-                        onClick={() => {
-                          setCurrentId(data.id);
-                        }}
-                      >
-                        삭제
-                      </button>
-                    </div>
+                  <div className='flex flex-1 justify-between items-center'>
+                    <div>{formatDate(data.createdAt, 'YY년 MM월 DD일')}</div>
+                    <button
+                      className='mr-[10px] text-red-500 hover:text-red-600'
+                      onClick={() => {
+                        setCurrentId(data.id);
+                      }}
+                    >
+                      삭제
+                    </button>
+                  </div>
 
-                    {currentId === data.id && (
-                      <DeleteModal
-                        isOpen={true}
-                        fileName={data.fileName}
-                        onClose={() => {
-                          setCurrentId(null);
-                        }}
-                        onDelete={() => {
-                          deleteMutate(data.id);
-                          setCurrentId(null);
-                        }}
-                      />
-                    )}
-                  </li>
-                ))}
+                  {currentId === data.id && (
+                    <DeleteModal
+                      isOpen={true}
+                      fileName={data.fileName}
+                      onClose={() => {
+                        setCurrentId(null);
+                      }}
+                      onDelete={() => {
+                        deleteMutate(data.id);
+                        setCurrentId(null);
+                      }}
+                    />
+                  )}
+                </li>
+              ))}
           </ul>
         </div>
       </div>

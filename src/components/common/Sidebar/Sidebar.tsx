@@ -35,8 +35,8 @@ export default function Sidebar() {
   });
 
   const { data: summaries } = useQuery({
-    queryKey: ['summaries'],
-    queryFn: getSummary,
+    queryKey: ['summaries', false],
+    queryFn: () => getSummary(false),
   });
 
   const { mutate } = useMutation({
@@ -81,7 +81,7 @@ export default function Sidebar() {
   return (
     <div
       className={clsx(
-        'fixed h-screen overflow-hidden bg-[#f8f8f8] duration-600 max-md:shadow-neutral-200 max-md:shadow-[50px_0_100px_-30px_rgba(0_0_0_0.2)]',
+        'fixed h-screen overflow-hidden bg-[#f8f8f8] duration-600 max-md:shadow-neutral-200 max-md:shadow-r',
         isSidebarOpen ? 'w-[260px] max-md:w-[75vw]' : 'w-0'
       )}
       ref={targetRef}
@@ -106,87 +106,85 @@ export default function Sidebar() {
         <div className='pl-[12px] pr-[10px] flex-1 overflow-y-auto pb-[20px]'>
           <ul className='flex flex-col gap-[1px]'>
             {summaries &&
-              summaries.data
-                .filter((item) => !item.isSaved)
-                .map((data) => (
-                  <li key={data.id}>
-                    <div
-                      className={clsx(
-                        'px-[8px] flex justify-between items-center rounded-[8px] hover:bg-gray-200 hover:rounded-[8px] whitespace-nowrap gap-[6px]',
-                        params.id === data.id && 'bg-gray-300 rounded-[8px]',
-                        currentId === data.id && 'bg-gray-200'
-                      )}
-                    >
-                      {isEditingId === data.id ? (
-                        <input
-                          value={editedFileName}
-                          onChange={(e) => setEditedFileName(e.target.value)}
-                          onKeyDown={(e) => {
-                            if (e.key === 'Enter') {
-                              setIsEditingId(null);
-                              mutate({
-                                id: data.id,
-                                fileName: editedFileName,
-                              });
-                              setEditedFileName('');
-                            }
-                          }}
-                          onBlur={() => {
+              summaries.data.map((data) => (
+                <li key={data.id}>
+                  <div
+                    className={clsx(
+                      'px-[8px] flex justify-between items-center rounded-[8px] hover:bg-gray-200 hover:rounded-[8px] whitespace-nowrap gap-[6px]',
+                      params.id === data.id && 'bg-gray-300 rounded-[8px]',
+                      currentId === data.id && 'bg-gray-200'
+                    )}
+                  >
+                    {isEditingId === data.id ? (
+                      <input
+                        value={editedFileName}
+                        onChange={(e) => setEditedFileName(e.target.value)}
+                        onKeyDown={(e) => {
+                          if (e.key === 'Enter') {
                             setIsEditingId(null);
-                            mutate({ id: data.id, fileName: editedFileName });
+                            mutate({
+                              id: data.id,
+                              fileName: editedFileName,
+                            });
                             setEditedFileName('');
-                          }}
-                          autoFocus
-                          className='py-[8px] pl-[10px] pr-[18px] mx-[-8px] rounded-[8px] focus:outline-none bg-gray-200'
+                          }
+                        }}
+                        onBlur={() => {
+                          setIsEditingId(null);
+                          mutate({ id: data.id, fileName: editedFileName });
+                          setEditedFileName('');
+                        }}
+                        autoFocus
+                        className='py-[8px] pl-[10px] pr-[18px] mx-[-8px] rounded-[8px] focus:outline-none bg-gray-200'
+                      />
+                    ) : (
+                      <Link
+                        className='w-full py-[8px] overflow-hidden'
+                        href={`/result/${data.id}`}
+                        onClick={() =>
+                          isMobile && setIsSidebarOpen(!isSidebarOpen)
+                        }
+                      >
+                        {data.fileName}
+                      </Link>
+                    )}
+
+                    <div className='relative'>
+                      <button
+                        className='flex items-center'
+                        onClick={() =>
+                          setCurrentId(currentId === data.id ? null : data.id)
+                        }
+                        ref={(el) => {
+                          btnRefs.current[data.id] = el;
+                        }}
+                      >
+                        <RiMoreFill
+                          className={clsx(
+                            'w-[24px] h-[24px] my-[8px] text-gray-600 hover:text-gray-900 hover:scale-110',
+                            isEditingId === data.id && 'hidden'
+                          )}
                         />
-                      ) : (
-                        <Link
-                          className='w-full py-[8px] overflow-hidden'
-                          href={`/result/${data.id}`}
-                          onClick={() =>
-                            isMobile && setIsSidebarOpen(!isSidebarOpen)
-                          }
-                        >
-                          {data.fileName}
-                        </Link>
-                      )}
+                      </button>
 
-                      <div className='relative'>
-                        <button
-                          className='flex items-center'
-                          onClick={() =>
-                            setCurrentId(currentId === data.id ? null : data.id)
-                          }
-                          ref={(el) => {
-                            btnRefs.current[data.id] = el;
+                      {currentId === data.id && (
+                        <SummaryDropdown
+                          fileName={data.fileName}
+                          isSaved={data.isSaved}
+                          currentId={currentId}
+                          btnRef={{ current: btnRefs.current[data.id] }}
+                          setCurrentId={setCurrentId}
+                          onEdit={() => {
+                            setIsEditingId(data.id);
+                            setEditedFileName(data.fileName);
+                            setCurrentId(null);
                           }}
-                        >
-                          <RiMoreFill
-                            className={clsx(
-                              'w-[24px] h-[24px] my-[8px] text-gray-600 hover:text-gray-900 hover:scale-110',
-                              isEditingId === data.id && 'hidden'
-                            )}
-                          />
-                        </button>
-
-                        {currentId === data.id && (
-                          <SummaryDropdown
-                            fileName={data.fileName}
-                            isSaved={data.isSaved}
-                            currentId={currentId}
-                            btnRef={{ current: btnRefs.current[data.id] }}
-                            setCurrentId={setCurrentId}
-                            onEdit={() => {
-                              setIsEditingId(data.id);
-                              setEditedFileName(data.fileName);
-                              setCurrentId(null);
-                            }}
-                          />
-                        )}
-                      </div>
+                        />
+                      )}
                     </div>
-                  </li>
-                ))}
+                  </div>
+                </li>
+              ))}
           </ul>
         </div>
       </div>
