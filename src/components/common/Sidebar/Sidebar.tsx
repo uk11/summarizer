@@ -10,11 +10,12 @@ import { RiStickyNoteAddLine } from 'react-icons/ri';
 import { RiMenu3Fill } from 'react-icons/ri';
 import { RiMoreFill } from 'react-icons/ri';
 import { useRef, useState } from 'react';
-import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
-import { getSummary, updateSummaryFileName } from '@/fetch';
+import { useMutation, useQueryClient } from '@tanstack/react-query';
+import { updateSummaryFileName } from '@/fetch';
 import SummaryDropdown from './SummaryDropdown';
 import { useMediaQuery } from 'react-responsive';
 import { useOnClickOutside } from '@/hooks/useOutsideClick';
+import { useSummaries } from '@/hooks/query/useSummaries';
 
 export default function Sidebar() {
   const params = useParams();
@@ -28,15 +29,12 @@ export default function Sidebar() {
   const [isEditingId, setIsEditingId] = useState<string | null>(null);
   const [editedFileName, setEditedFileName] = useState('');
 
+  const { data: summaries } = useSummaries(false);
+
   const { targetRef } = useOnClickOutside({
     onClickOutside: () => {
       if (!currentId && isMobile) setIsSidebarOpen(false);
     },
-  });
-
-  const { data: summaries } = useQuery({
-    queryKey: ['summaries', false],
-    queryFn: () => getSummary(false),
   });
 
   const { mutate } = useMutation({

@@ -3,13 +3,14 @@ import { createPortal } from 'react-dom';
 import { useSession } from 'next-auth/react';
 import { signOut } from 'next-auth/react';
 import { useOnClickOutside } from '@/hooks/useOutsideClick';
-import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
+import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { formatDate } from '@/lib/day';
-import { deleteSummary, getSummary } from '@/fetch';
+import { deleteSummary } from '@/fetch';
 import { useRouter } from 'next/navigation';
 import { useState } from 'react';
 import DeleteModal from '../Sidebar/DeleteModal';
 import { useToast } from '@/hooks/useToast';
+import { useSummaries } from '@/hooks/query/useSummaries';
 
 type Props = {
   isOpen: boolean;
@@ -23,10 +24,7 @@ export default function UserInfoModal({ isOpen, onClose }: Props) {
   const { data: session } = useSession();
   const { showToast } = useToast();
 
-  const { data: summaries } = useQuery({
-    queryKey: ['summaries', true],
-    queryFn: () => getSummary(true),
-  });
+  const { data: summaries } = useSummaries(true);
 
   const handleLogout = () => {
     onClose();

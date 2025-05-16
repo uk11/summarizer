@@ -18,8 +18,10 @@ export const uploadAndSummary = async (file: File) => {
   return res.json();
 };
 
-export const getSummary = async (): Promise<{ data: Summary[] }> => {
-  const res = await fetch('/api/summary/');
+export const getSummaries = async (
+  isSaved?: boolean
+): Promise<{ data: Summary[] }> => {
+  const res = await fetch(`/api/summary?isSaved=${isSaved}`);
 
   if (!res.ok) {
     const { error } = await res.json();
