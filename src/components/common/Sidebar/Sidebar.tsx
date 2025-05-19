@@ -95,7 +95,10 @@ export default function Sidebar() {
 
           <button
             className='p-[4px] hover:bg-gray-200 hover:rounded-[6px]'
-            onClick={() => router.push('/')}
+            onClick={() => {
+              setIsSidebarOpen(false);
+              router.push('/');
+            }}
           >
             <RiStickyNoteAddLine className='w-[24px] h-[24px] cursor-pointer text-[#555555]' />
           </button>
