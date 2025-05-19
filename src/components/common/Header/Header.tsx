@@ -30,10 +30,10 @@ export default function Header() {
     <header
       className={clsx(
         'h-[60px] flex items-center justify-between px-[16px] border-b border-blue-100 shadow-xs shadow-blue-100',
-        'max-md:px-[10px]'
+        'max-md:px-[12px]'
       )}
     >
-      <div className='flex gap-[16px] max-md:gap-[6px]'>
+      <div className='flex gap-[10px] max-md:gap-[4px]'>
         {!isSidebarOpen && (
           <button
             className='p-1 hover:bg-gray-200 hover:rounded-[6px]'
@@ -46,7 +46,7 @@ export default function Header() {
           href='/'
           className={clsx(
             'text-[20px] font-bold',
-            isSidebarOpen && 'max-md:ml-[38px]'
+            isSidebarOpen && 'max-md:ml-[36px]'
           )}
         >
           <LogoSvg />

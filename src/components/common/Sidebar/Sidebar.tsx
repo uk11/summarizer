@@ -79,13 +79,13 @@ export default function Sidebar() {
   return (
     <div
       className={clsx(
-        'fixed h-screen overflow-hidden bg-[#f8f8f8] duration-600 max-md:shadow-neutral-200 max-md:shadow-r',
+        'fixed h-screen overflow-hidden bg-[#f8f8f8] duration-600 max-md:shadow-neutral-300 max-md:shadow-r',
         isSidebarOpen ? 'w-[260px] max-md:w-[75vw]' : 'w-0'
       )}
       ref={targetRef}
     >
       <div className='w-[260px] flex flex-col h-screen max-md:w-[75vw]'>
-        <div className='h-[60px] flex items-center justify-between px-[16px] '>
+        <div className='h-[60px] flex items-center justify-between pl-[12px] pr-[16px] '>
           <button
             className='p-[4px] hover:bg-gray-200 hover:rounded-[6px]'
             onClick={() => setIsSidebarOpen(false)}
@@ -104,7 +104,7 @@ export default function Sidebar() {
           </button>
         </div>
 
-        <div className='pl-[12px] pr-[10px] flex-1 overflow-y-auto pb-[20px]'>
+        <div className='pl-[12px] pr-[6px] max-md:pr-[8px] flex-1 overflow-y-auto pb-[20px] scrollbar-stable'>
           <ul className='flex flex-col gap-[1px]'>
             {summaries &&
               summaries.data.map((data) => (
