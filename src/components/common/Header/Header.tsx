@@ -42,7 +42,13 @@ export default function Header() {
             <RiMenu3Fill className='w-[24px] h-[24px]' />
           </button>
         )}
-        <Link href='/' className='text-[20px] font-bold'>
+        <Link
+          href='/'
+          className={clsx(
+            'text-[20px] font-bold',
+            isSidebarOpen && 'max-md:ml-[38px]'
+          )}
+        >
           <LogoSvg />
         </Link>
       </div>
