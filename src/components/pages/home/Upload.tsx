@@ -1,15 +1,16 @@
 'use client';
 
-import { useState } from 'react';
 import TextArea from './TextArea';
 import FileDrop from './FileDrop';
+import { useAtom } from 'jotai';
+import { isFileModeAtom } from '@/store';
 
 export default function Upload() {
-  const [isTextMode, setIsTextMode] = useState(false);
+  const [isFileMode, setIsFileMode] = useAtom(isFileModeAtom);
 
-  return isTextMode ? (
-    <TextArea onSwitch={() => setIsTextMode(false)} />
+  return isFileMode ? (
+    <FileDrop onSwitch={() => setIsFileMode(false)} />
   ) : (
-    <FileDrop onSwitch={() => setIsTextMode(true)} />
+    <TextArea onSwitch={() => setIsFileMode(true)} />
   );
 }
