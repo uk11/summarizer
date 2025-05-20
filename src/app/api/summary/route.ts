@@ -1,19 +1,14 @@
 import { NextRequest, NextResponse } from 'next/server';
-import OpenAI from 'openai';
-import path from 'path';
-import * as mammoth from 'mammoth';
-import pdfParse from 'pdf-parse';
 import { db } from '@/lib/prisma';
 import { getServerSession } from 'next-auth';
 import { authOptions } from '@/lib/authOptions';
-import { cookies } from 'next/headers';
-import { v4 as uuidv4 } from 'uuid';
 import { getAnonymousId } from '@/lib/auth';
 import { Summary } from '@prisma/client';
-
-const openai = new OpenAI({
-  apiKey: process.env.OPENAI_API_KEY,
-});
+import {
+  extractText,
+  generateSummary,
+  getUserOrAnonymousId,
+} from '@/lib/summary';
 
 export async function GET(req: NextRequest) {
   try {
@@ -94,72 +89,4 @@ export async function POST(req: NextRequest) {
 
     return NextResponse.json({ error: errorMessage }, { status: 500 });
   }
-}
-
-// 파일 확장자별 텍스트 추출
-async function extractText(file: File) {
-  const buffer = Buffer.from(await file.arrayBuffer());
-  const ext = path.extname(file.name).toLowerCase();
-
-  switch (ext) {
-    case '.txt':
-      return buffer.toString('utf-8');
-
-    case '.docx': {
-      const result = await mammoth.extractRawText({ buffer });
-      return result.value;
-    }
-
-    case '.pdf': {
-      const result = await pdfParse(buffer);
-      return result.text;
-    }
-
-    default:
-      throw new Error(`${ext} 형식은 지원하지 않습니다.`);
-  }
-}
-
-// GPT 요약 요청
-async function generateSummary(fileContent: string) {
-  const completion = await openai.chat.completions.create({
-    model: 'gpt-3.5-turbo',
-    // model: 'gpt-4-turbo',
-    messages: [
-      {
-        role: 'system',
-        content: `제공된 텍스트를 이해하고 핵심 내용을 간결하고 명확하게 요약해 주세요.`,
-      },
-      {
-        role: 'user',
-        content: fileContent,
-      },
-    ],
-    temperature: 0.7,
-  });
-
-  return (
-    completion.choices[0].message.content ?? '요약 결과를 가져오지 못했어요.'
-  );
-}
-
-// 로그인/비로그인 유저 id 구분
-async function getUserOrAnonymousId() {
-  const session = await getServerSession(authOptions);
-  const userId = session?.user?.id;
-
-  const cookieStore = await cookies();
-  let anonymousId = cookieStore.get('anonymousId')?.value;
-
-  if (!userId && !anonymousId) {
-    anonymousId = uuidv4();
-    cookieStore.set({
-      name: 'anonymousId',
-      value: anonymousId,
-      path: '/',
-      maxAge: 60 * 60 * 24 * 30,
-    });
-  }
-
-  return userId ? { userId } : { anonymousId };
 }
