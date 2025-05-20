@@ -1,6 +1,6 @@
 import { Summary } from '@prisma/client';
 
-export const uploadAndSummary = async (file: File) => {
+export const uploadFile = async (file: File) => {
   const formData = new FormData();
   formData.append('file', file);
   formData.append('fileName', file.name);
@@ -12,7 +12,22 @@ export const uploadAndSummary = async (file: File) => {
 
   if (!res.ok) {
     const { error } = await res.json();
-    console.error('summary 업로드 실패' + error);
+    console.error('파일 업로드 실패' + error);
+  }
+
+  return res.json();
+};
+
+export const uploadText = async (text: string) => {
+  const res = await fetch('/api/summary/text', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ text }),
+  });
+
+  if (!res.ok) {
+    const { error } = await res.json();
+    console.error('텍스트 업로드 실패' + error);
   }
 
   return res.json();
@@ -62,7 +77,7 @@ export const getChatMessages = async (summaryId: string) => {
   }
 
   const data = await res.json();
-  return data.chatMessages as { role: 'user' | 'assistant'; content: string }[];
+  return data.chatMessages;
 };
 
 export const postChatMessage = async (summaryId: string, question: string) => {
@@ -81,6 +96,7 @@ export const postChatMessage = async (summaryId: string, question: string) => {
 export const updateSummarySaved = async (id: string, isSaved: boolean) => {
   const res = await fetch(`/api/summary/${id}/save`, {
     method: 'PATCH',
+    headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify({ isSaved: !isSaved }),
   });
 

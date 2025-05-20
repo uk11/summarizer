@@ -1,8 +1,6 @@
 'use client';
 
-import { uploadAndSummary } from '@/fetch';
-import { useMutation, useQueryClient } from '@tanstack/react-query';
-import { useRouter } from 'next/navigation';
+import { uploadFile, uploadText } from '@/fetch';
 import { useDropzone, FileWithPath, FileRejection } from 'react-dropzone';
 import Spinner from '@/components/common/Spinner';
 import clsx from 'clsx';
@@ -11,26 +9,25 @@ import { useSession } from 'next-auth/react';
 import DocxSvg from '@/components/svg-components/DocxSvg';
 import PdfSvg from '@/components/svg-components/PdfSvg';
 import TxtSvg from '@/components/svg-components/TxtSvg';
+import { useRef, useState } from 'react';
+import { useUpload } from '@/hooks/query/useUpload';
 
 const Dropzone = () => {
-  const router = useRouter();
-  const queryClient = useQueryClient();
   const { showToast } = useToast();
   const { status } = useSession();
+  const [isTextMode, setIsTextMode] = useState(false);
+  const textareaRef = useRef<HTMLTextAreaElement | null>(null);
 
   const maxSize = status === 'authenticated' ? 5 * 1024 * 1024 : 500 * 1024;
 
-  const { mutate, isPending } = useMutation({
-    mutationFn: uploadAndSummary,
-    onSuccess: (data) => {
-      router.push(`/result/${data.id}`);
-      queryClient.invalidateQueries({ queryKey: ['summaries'] });
-    },
-  });
+  const { mutate: fileMutate, isPending: isFilePending } =
+    useUpload(uploadFile);
+  const { mutate: textMutate, isPending: isTextPending } =
+    useUpload(uploadText);
 
   const onDrop = (files: FileWithPath[]) => {
     const file = files[0];
-    mutate(file);
+    fileMutate(file);
   };
 
   const onDropRejected = (fileRejections: FileRejection[]) => {
@@ -64,11 +61,49 @@ const Dropzone = () => {
     },
   });
 
-  return (
+  return isTextMode ? (
+    <div
+      className={clsx(
+        'flex flex-col justify-center items-center w-[800px] h-[300px] mt-[40px] rounded-[12px] p-[16px]',
+        'border-2 border-blue-300 shadow-lg shadow-blue-100',
+        'max-md:w-full max-md:h-[250px]'
+      )}
+    >
+      <textarea
+        ref={textareaRef}
+        className='w-full h-full resize-none outline-none'
+        placeholder='요약 내용을 입력해주세요.'
+      />
+
+      <div className='flex justify-between w-full mt-[10px]'>
+        <button
+          className='basic-btn'
+          onClick={() => {
+            setIsTextMode(false);
+          }}
+        >
+          파일 업로드하기
+        </button>
+
+        <button
+          className='blue-btn'
+          onClick={() => {
+            if (textareaRef.current?.value) {
+              textMutate(textareaRef.current.value);
+            } else showToast('요약 내용을 입력해 주세요.', 'error');
+          }}
+        >
+          요약하기
+        </button>
+      </div>
+
+      {isTextPending && <Spinner />}
+    </div>
+  ) : (
     <div
       {...getRootProps()}
       className={clsx(
-        'flex flex-col justify-center items-center w-[800px] h-[300px] mt-[40px] rounded-[12px] cursor-pointer hover:bg-blue-50',
+        'flex flex-col justify-center items-center w-[800px] h-[300px] mt-[40px] rounded-[12px] cursor-pointer hover:bg-blue-50 p-[16px]',
         'border-2 border-dashed border-blue-500 shadow-lg shadow-blue-100',
         'max-md:w-full max-md:h-[250px]',
         isDragActive && 'bg-blue-50'
@@ -76,7 +111,7 @@ const Dropzone = () => {
     >
       <input {...getInputProps()} />
 
-      <div className='flex flex-col items-center'>
+      <div className='flex flex-col items-center justify-center h-full'>
         <div className='mb-[20px] max-md:mb-[10px] max-md:scale-90 flex gap-[10px]'>
           <PdfSvg />
           <TxtSvg />
@@ -88,7 +123,17 @@ const Dropzone = () => {
         </p>
       </div>
 
-      {isPending && <Spinner />}
+      <button
+        className='self-start basic-btn'
+        onClick={(e) => {
+          e.stopPropagation();
+          setIsTextMode(true);
+        }}
+      >
+        직접 입력하기
+      </button>
+
+      {isFilePending && <Spinner />}
     </div>
   );
 };
