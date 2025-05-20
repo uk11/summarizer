@@ -9,7 +9,7 @@ import { useParams, useRouter } from 'next/navigation';
 import { RiStickyNoteAddLine } from 'react-icons/ri';
 import { RiMenu3Fill } from 'react-icons/ri';
 import { RiMoreFill } from 'react-icons/ri';
-import { useRef, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { updateSummaryFileName } from '@/fetch';
 import SummaryDropdown from './SummaryDropdown';
@@ -75,6 +75,10 @@ export default function Sidebar() {
       queryClient.setQueryData(['summaries'], ctx?.prevSummary);
     },
   });
+
+  useEffect(() => {
+    if (!isMobile) setIsSidebarOpen(true);
+  }, [isMobile, setIsSidebarOpen]);
 
   return (
     <div
