@@ -1,4 +1,4 @@
-import Dropzone from './DropZone';
+import Upload from './Upload';
 
 export default function HomeClient() {
   return (
@@ -14,7 +14,7 @@ export default function HomeClient() {
         </p>
       </div>
 
-      <Dropzone />
+      <Upload />
     </div>
   );
 }

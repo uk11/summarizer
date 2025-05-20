@@ -1,29 +1,25 @@
-'use client';
-
-import { uploadFile, uploadText } from '@/fetch';
-import { useDropzone, FileWithPath, FileRejection } from 'react-dropzone';
 import Spinner from '@/components/common/Spinner';
-import clsx from 'clsx';
-import { useToast } from '@/hooks/useToast';
-import { useSession } from 'next-auth/react';
 import DocxSvg from '@/components/svg-components/DocxSvg';
 import PdfSvg from '@/components/svg-components/PdfSvg';
 import TxtSvg from '@/components/svg-components/TxtSvg';
-import { useRef, useState } from 'react';
+import { uploadFile } from '@/fetch';
 import { useUpload } from '@/hooks/query/useUpload';
+import { useToast } from '@/hooks/useToast';
+import clsx from 'clsx';
+import { useSession } from 'next-auth/react';
+import { FileRejection, FileWithPath, useDropzone } from 'react-dropzone';
 
-const Dropzone = () => {
-  const { showToast } = useToast();
+type Props = {
+  onSwitch: () => void;
+};
+
+export default function FileDrop({ onSwitch }: Props) {
   const { status } = useSession();
-  const [isTextMode, setIsTextMode] = useState(false);
-  const textareaRef = useRef<HTMLTextAreaElement | null>(null);
-
+  const { showToast } = useToast();
   const maxSize = status === 'authenticated' ? 5 * 1024 * 1024 : 500 * 1024;
 
   const { mutate: fileMutate, isPending: isFilePending } =
     useUpload(uploadFile);
-  const { mutate: textMutate, isPending: isTextPending } =
-    useUpload(uploadText);
 
   const onDrop = (files: FileWithPath[]) => {
     const file = files[0];
@@ -60,46 +56,7 @@ const Dropzone = () => {
         ['.docx'],
     },
   });
-
-  return isTextMode ? (
-    <div
-      className={clsx(
-        'flex flex-col justify-center items-center w-[800px] h-[300px] mt-[40px] rounded-[12px] p-[16px]',
-        'border-2 border-blue-300 shadow-lg shadow-blue-100',
-        'max-md:w-full max-md:h-[250px]'
-      )}
-    >
-      <textarea
-        ref={textareaRef}
-        className='w-full h-full resize-none outline-none'
-        placeholder='요약 내용을 입력해주세요.'
-      />
-
-      <div className='flex justify-between w-full mt-[10px]'>
-        <button
-          className='basic-btn'
-          onClick={() => {
-            setIsTextMode(false);
-          }}
-        >
-          파일 업로드하기
-        </button>
-
-        <button
-          className='blue-btn'
-          onClick={() => {
-            if (textareaRef.current?.value) {
-              textMutate(textareaRef.current.value);
-            } else showToast('요약 내용을 입력해 주세요.', 'error');
-          }}
-        >
-          요약하기
-        </button>
-      </div>
-
-      {isTextPending && <Spinner />}
-    </div>
-  ) : (
+  return (
     <div
       {...getRootProps()}
       className={clsx(
@@ -127,7 +84,7 @@ const Dropzone = () => {
         className='self-start basic-btn'
         onClick={(e) => {
           e.stopPropagation();
-          setIsTextMode(true);
+          onSwitch();
         }}
       >
         직접 입력하기
@@ -136,6 +93,4 @@ const Dropzone = () => {
       {isFilePending && <Spinner />}
     </div>
   );
-};
-
-export default Dropzone;
+}
