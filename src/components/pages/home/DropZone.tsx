@@ -3,12 +3,14 @@
 import { uploadAndSummary } from '@/fetch';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { useRouter } from 'next/navigation';
-import { useDropzone, FileWithPath } from 'react-dropzone';
+import { useDropzone, FileWithPath, FileRejection } from 'react-dropzone';
 import Spinner from '@/components/common/Spinner';
 import clsx from 'clsx';
-import FileUploadSvg from '@/components/svg-components/FileUploadSvg';
 import { useToast } from '@/hooks/useToast';
 import { useSession } from 'next-auth/react';
+import DocxSvg from '@/components/svg-components/DocxSvg';
+import PdfSvg from '@/components/svg-components/PdfSvg';
+import TxtSvg from '@/components/svg-components/TxtSvg';
 
 const Dropzone = () => {
   const router = useRouter();
@@ -31,7 +33,15 @@ const Dropzone = () => {
     mutate(file);
   };
 
-  const onDropRejected = () => {
+  const onDropRejected = (fileRejections: FileRejection[]) => {
+    const isInvalidFileType =
+      fileRejections[0]?.errors[0]?.code === 'file-invalid-type';
+
+    if (isInvalidFileType) {
+      showToast('지원되지 않는 파일 형식입니다.', 'error');
+      return;
+    }
+
     if (status === 'authenticated') {
       showToast('5MB 미만의 파일만 업로드할 수 있습니다.', 'error');
     } else {
@@ -46,6 +56,12 @@ const Dropzone = () => {
     onDrop,
     onDropRejected,
     maxSize,
+    accept: {
+      'application/pdf': ['.pdf'],
+      'text/plain': ['.txt'],
+      'application/vnd.openxmlformats-officedocument.wordprocessingml.document':
+        ['.docx'],
+    },
   });
 
   return (
@@ -61,8 +77,10 @@ const Dropzone = () => {
       <input {...getInputProps()} />
 
       <div className='flex flex-col items-center'>
-        <div className='mb-[20px] max-md:mb-[10px] max-md:scale-90 max-md:z-[-1]'>
-          <FileUploadSvg />
+        <div className='mb-[20px] max-md:mb-[10px] max-md:scale-90 flex gap-[10px]'>
+          <PdfSvg />
+          <TxtSvg />
+          <DocxSvg />
         </div>
 
         <p className='text-xl max-md:text-base'>
