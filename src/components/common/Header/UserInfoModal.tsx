@@ -54,7 +54,7 @@ export default function UserInfoModal({ isOpen, onClose }: Props) {
   if (!isOpen) return null;
 
   return createPortal(
-    <div className='fixed inset-0 bg-black/40 flex justify-center items-center'>
+    <div className='fixed inset-0 bg-black/40 flex justify-center items-center z-[20]'>
       <div
         className='bg-white flex justify-center flex-col px-[20px] py-[30px] rounded-[10px] w-[600px] max-md:w-full max-md:mx-[20px]'
         ref={targetRef}

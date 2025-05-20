@@ -28,7 +28,7 @@ export default function LoginModal({ isOpen, onClose }: Props) {
   if (!isOpen) return null;
 
   return createPortal(
-    <div className='fixed inset-0 bg-black/40 flex justify-center items-center'>
+    <div className='fixed inset-0 bg-black/40 flex justify-center items-center z-[20]'>
       <div
         className={clsx(
           'w-[370px] bg-white flex justify-center items-center flex-col px-[20px] py-[20px] rounded-[10px]',

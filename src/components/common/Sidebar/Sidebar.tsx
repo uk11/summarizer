@@ -79,7 +79,7 @@ export default function Sidebar() {
   return (
     <div
       className={clsx(
-        'fixed h-screen overflow-hidden bg-[#f8f8f8] duration-600 max-md:shadow-neutral-300 max-md:shadow-r',
+        'fixed h-screen overflow-hidden bg-[#f8f8f8] duration-600 max-md:shadow-neutral-300 max-md:shadow-r z-[10]',
         isSidebarOpen ? 'w-[260px] max-md:w-[75vw]' : 'w-0'
       )}
       ref={targetRef}

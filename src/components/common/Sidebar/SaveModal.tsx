@@ -21,7 +21,7 @@ export default function SaveModal({
   if (!isOpen) return null;
 
   return createPortal(
-    <div className='fixed inset-0 bg-black/40 flex justify-center items-center'>
+    <div className='fixed inset-0 bg-black/40 flex justify-center items-center z-[20]'>
       <div
         className='bg-white flex justify-center flex-col px-[20px] py-[20px] rounded-[10px] max-md:w-full max-md:mx-[20px]'
         ref={targetRef}
