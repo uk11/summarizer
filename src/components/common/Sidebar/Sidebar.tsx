@@ -100,7 +100,9 @@ export default function Sidebar() {
           <button
             className='p-[4px] hover:bg-gray-200 hover:rounded-[6px]'
             onClick={() => {
-              setIsSidebarOpen(false);
+              if (isMobile) {
+                setIsSidebarOpen(false);
+              }
               router.push('/');
             }}
           >
