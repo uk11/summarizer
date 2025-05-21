@@ -7,6 +7,7 @@ import GoogleIconSvg from '@/components/svg-components/GoogleIconSvg';
 import LoginLogoSvg from '@/components/svg-components/LoginLogoSvg';
 import clsx from 'clsx';
 import { useRouter } from 'next/navigation';
+import NaverIconSvg from '@/components/svg-components/NaverIconSvg';
 
 type Props = {
   isOpen: boolean;
@@ -20,7 +21,7 @@ export default function LoginModal({ isOpen, onClose }: Props) {
     onClickOutside: onClose,
   });
 
-  const handleLogin = (social: 'google' | 'kakao') => {
+  const handleLogin = (social: 'google' | 'kakao' | 'naver') => {
     signIn(social);
     router.push('/');
   };
@@ -59,6 +60,17 @@ export default function LoginModal({ isOpen, onClose }: Props) {
 
             <p className='flex justify-center w-full text-primary'>
               Google 계정으로 시작하기
+            </p>
+          </button>
+
+          <button
+            className='border border-gray-300 px-[10px] py-[10px] rounded-[10px] flex hover:bg-gray-100 hover:border-gray-100'
+            onClick={() => handleLogin('naver')}
+          >
+            <NaverIconSvg />
+
+            <p className='flex justify-center w-full text-primary'>
+              Naver 계정으로 시작하기
             </p>
           </button>
 
