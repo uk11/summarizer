@@ -12,6 +12,12 @@ type Props = {
   summary: Summary;
 };
 
+type ChatMessage = {
+  id: string;
+  role: 'user' | 'assistant';
+  content: string;
+};
+
 export default function SummaryChat({ summary }: Props) {
   const [questionInput, setQuestionInput] = useState('');
   const router = useRouter();
@@ -20,15 +26,14 @@ export default function SummaryChat({ summary }: Props) {
   const { data: chatMessages } = useQuery({
     queryKey: ['summaryChat', summary.id],
     queryFn: () => getChatMessages(summary.id),
-    select: (chatMessages) =>
-      [
-        {
-          id: 'default',
-          role: 'assistant',
-          content: '안녕하세요! 요약을 읽고 궁금한 점이 있다면 알려주세요.',
-        },
-        ...chatMessages,
-      ] as { id: string; role: 'user' | 'assistant'; content: string }[],
+    select: (chatMessages) => [
+      {
+        id: 'default',
+        role: 'assistant',
+        content: '안녕하세요! 요약을 읽고 궁금한 점이 있다면 알려주세요.',
+      },
+      ...chatMessages,
+    ],
   });
 
   const { scrollRef } = useBottomScroll(chatMessages!);
@@ -41,6 +46,37 @@ export default function SummaryChat({ summary }: Props) {
       summaryId: string;
       question: string;
     }) => postChatMessage(summaryId, question),
+
+    onMutate: async ({ summaryId, question }) => {
+      await queryClient.cancelQueries({ queryKey: ['summaryChat', summaryId] });
+
+      const previousMessages = queryClient.getQueryData<ChatMessage>([
+        'summaryChat',
+        summaryId,
+      ]);
+
+      const newMessage: ChatMessage = {
+        id: `temp-${Date.now()}`,
+        role: 'user',
+        content: question,
+      };
+
+      queryClient.setQueryData<ChatMessage[]>(
+        ['summaryChat', summaryId],
+        (prevMessages) =>
+          prevMessages ? [...prevMessages, newMessage] : [newMessage]
+      );
+
+      return { previousMessages };
+    },
+
+    onError: (err, _variables, context) => {
+      console.error(err);
+      queryClient.setQueryData(
+        ['summaryChat', summary.id],
+        context?.previousMessages
+      );
+    },
 
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['summaryChat', summary.id] });
@@ -69,8 +105,11 @@ export default function SummaryChat({ summary }: Props) {
   };
 
   return (
-    <div className='flex flex-col flex-[6] p-[16px] pr-[12px] border border-gray-300 shadow-gray-300 shadow-sm rounded-[8px] md:overflow-y-auto'>
-      <div className='flex-1' ref={scrollRef}>
+    <div
+      className='flex flex-col flex-[6] p-[16px] pr-[12px] border border-gray-300 shadow-gray-300 shadow-sm rounded-[8px] md:overflow-y-auto'
+      ref={scrollRef}
+    >
+      <div className='flex-1'>
         <div className='text-[20px] font-semibold mb-[2px] text-black'>
           채팅
         </div>
@@ -88,11 +127,17 @@ export default function SummaryChat({ summary }: Props) {
             </div>
           ))}
 
-        {isPending && (
-          <div className='text-gray-400 pl-[8px] px-[8px] py-[6px] mb-[10px]'>
-            답변 작성 중...
-          </div>
-        )}
+        {chatMessages &&
+          chatMessages[chatMessages.length - 1]?.role === 'user' && (
+            <div
+              className={clsx(
+                'px-[8px] py-[6px] text-gray-400 ',
+                isPending ? 'mb-[60px]' : 'mb-[84px]'
+              )}
+            >
+              {isPending && '답변 작성 중...'}
+            </div>
+          )}
       </div>
 
       {summary.isSaved ? (
