@@ -6,7 +6,6 @@ import KakaoIconSvg from '@/components/svg-components/KakaoIconSvg';
 import GoogleIconSvg from '@/components/svg-components/GoogleIconSvg';
 import LoginLogoSvg from '@/components/svg-components/LoginLogoSvg';
 import clsx from 'clsx';
-import { useRouter } from 'next/navigation';
 import NaverIconSvg from '@/components/svg-components/NaverIconSvg';
 
 type Props = {
@@ -15,15 +14,12 @@ type Props = {
 };
 
 export default function LoginModal({ isOpen, onClose }: Props) {
-  const router = useRouter();
-
   const { targetRef } = useOnClickOutside({
     onClickOutside: onClose,
   });
 
   const handleLogin = (social: 'google' | 'kakao' | 'naver') => {
-    signIn(social);
-    router.push('/');
+    signIn(social, { callbackUrl: '/' });
   };
 
   if (!isOpen) return null;
