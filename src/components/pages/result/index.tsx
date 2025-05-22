@@ -18,8 +18,11 @@ type Props = {
 export default function ResultClient({ summary }: Props) {
   const router = useRouter();
   const { showToast } = useToast();
-  const { data: session } = useSession();
-  const isAccess = summary.userId && session?.user?.id !== summary.userId;
+  const { data: session, status } = useSession();
+  const isAccess =
+    status === 'authenticated' &&
+    summary.userId &&
+    session?.user?.id !== summary.userId;
 
   const { data: chatMessages } = useQuery({
     queryKey: ['summaryChat', summary.id],
