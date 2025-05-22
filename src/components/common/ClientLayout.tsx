@@ -17,7 +17,7 @@ export default function ClientLayout({
   return (
     <div
       className={clsx(
-        'duration-600 max-md:pl-0',
+        'duration-600 max-md:pl-0 h-screen',
         isSidebarOpen ? 'pl-[260px]' : 'pl-0'
       )}
     >
