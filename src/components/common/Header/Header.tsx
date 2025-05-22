@@ -9,7 +9,6 @@ import UserInfoModal from './UserInfoModal';
 import { RiMenu3Fill } from 'react-icons/ri';
 import { useAtom } from 'jotai';
 import { isSidebarOpenAtom } from '@/store';
-import LogoSvg from '@/components/svg-components/LogoSvg';
 import clsx from 'clsx';
 
 export default function Header() {
@@ -45,11 +44,11 @@ export default function Header() {
         <Link
           href='/'
           className={clsx(
-            'text-[20px] font-bold',
+            'text-[24px] font-semibold',
             isSidebarOpen && 'max-md:ml-[36px]'
           )}
         >
-          <LogoSvg />
+          Summarizer
         </Link>
       </div>
 
