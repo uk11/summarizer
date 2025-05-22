@@ -88,7 +88,8 @@ export async function generateSummary(fileContent: string) {
     messages: [
       {
         role: 'system',
-        content: `제공된 텍스트를 이해하고 핵심 내용을 간결하고 명확하게 요약해 주세요.`,
+        content:
+          '제공된 텍스트를 핵심 위주로 간결하게 요약해주세요. 요약 내용 흐름에 따라 자연스럽게 문단을 나누어 줄바꿈 처리해주세요.',
       },
       {
         role: 'user',
