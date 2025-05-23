@@ -1,4 +1,5 @@
 import { Summary } from '@prisma/client';
+import clsx from 'clsx';
 import ReactMarkdown from 'react-markdown';
 
 type Props = {
@@ -7,8 +8,13 @@ type Props = {
 
 export default function SummaryResult({ summary }: Props) {
   return (
-    <div className='border p-[16px] md:flex-[4] md:overflow-y-auto border-gray-300 shadow-gray-300 shadow-sm rounded-[8px] whitespace-pre-line'>
-      <div className='text-[20px] font-semibold mb-[8px] text-black'>
+    <div
+      className={clsx(
+        'border p-[16px] flex-[4] md:overflow-y-auto border-gray-300 rounded-[8px] whitespace-pre-line',
+        'shadow-sm shadow-gray-300'
+      )}
+    >
+      <div className='text-[20px] font-bold mb-[8px] break-all'>
         {summary.fileName}
       </div>
 

@@ -106,13 +106,14 @@ export default function SummaryChat({ summary }: Props) {
 
   return (
     <div
-      className='flex flex-col flex-[6] p-[16px] pr-[12px] border border-gray-300 shadow-gray-300 shadow-sm rounded-[8px] md:overflow-y-auto'
+      className={clsx(
+        'flex flex-col flex-[6] p-[16px] pr-[12px] border border-gray-300 rounded-[8px] md:overflow-y-auto',
+        'shadow-sm shadow-gray-300'
+      )}
       ref={scrollRef}
     >
       <div className='flex-1'>
-        <div className='text-[20px] font-semibold mb-[2px] text-black'>
-          채팅
-        </div>
+        <div className='text-[20px] font-bold mb-[2px]'>채팅</div>
 
         {chatMessages &&
           chatMessages.map((msg) => (
@@ -120,7 +121,9 @@ export default function SummaryChat({ summary }: Props) {
               key={msg.id}
               className={clsx(
                 'px-[8px] py-[6px] mb-[10px] rounded max-w-[80%] w-fit break-words whitespace-pre-wrap',
-                msg.role === 'user' ? 'bg-gray-100 ml-auto' : 'mr-auto'
+                msg.role === 'user'
+                  ? 'bg-gray-100 dark:bg-gray-200 text-black ml-auto'
+                  : 'mr-auto'
               )}
             >
               {msg.content}
@@ -131,7 +134,7 @@ export default function SummaryChat({ summary }: Props) {
           chatMessages[chatMessages.length - 1]?.role === 'user' && (
             <div
               className={clsx(
-                'px-[8px] py-[6px] text-gray-400 ',
+                'px-[8px] py-[6px] text-gray-400 dark:text-white-100',
                 isPending ? 'mb-[60px]' : 'mb-[84px]'
               )}
             >
@@ -141,14 +144,14 @@ export default function SummaryChat({ summary }: Props) {
       </div>
 
       {summary.isSaved ? (
-        <div className='flex items-center justify-center gap-[20px]'>
+        <div className='flex items-center justify-center gap-[20px] text-center'>
           <p>
-            채팅을 이어서 하려면 저장을{' '}
-            <span className='max-md:block'>취소하세요.</span>
+            채팅을 이어서 하려면{' '}
+            <span className='max-md:block'>저장을 취소하세요.</span>
           </p>
 
           <button
-            className='basic-btn'
+            className='basic-btn hover:dark:bg-dark-500'
             onClick={() =>
               cancleSaveMutate({
                 summaryId: summary.id,
@@ -166,7 +169,10 @@ export default function SummaryChat({ summary }: Props) {
             value={questionInput}
             onChange={(e) => setQuestionInput(e.target.value)}
             onKeyDown={(e) => e.key === 'Enter' && handleSubmitQuestion()}
-            className='flex-1 border border-gray-400 rounded-[6px] p-[8px] shadow-gray-200 shadow-md placeholder:text-gray-400 focus:outline-none '
+            className={clsx(
+              'flex-1 border rounded-[6px] p-[8px] border-gray-400 placeholder:text-gray-400 bg-white text-black focus:outline-none',
+              'shadow-md shadow-gray-200 dark:shadow-none'
+            )}
             placeholder='무엇이든 물어보세요.'
           />
 
