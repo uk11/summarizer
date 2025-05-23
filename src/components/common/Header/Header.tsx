@@ -1,21 +1,25 @@
 'use client';
 
 import Link from 'next/link';
-import LoginModal from './LoginModal';
 import { useState } from 'react';
 import { useSession } from 'next-auth/react';
-import Image from 'next/image';
-import UserInfoModal from './UserInfoModal';
-import { RiMenu3Fill } from 'react-icons/ri';
 import { useAtom } from 'jotai';
 import { isSidebarOpenAtom } from '@/store';
+import { useTheme } from 'next-themes';
+import { RiMenu3Fill } from 'react-icons/ri';
 import clsx from 'clsx';
+import Image from 'next/image';
+import UserInfoModal from './UserInfoModal';
+import LoginModal from './LoginModal';
+import DarkmodeButton from './DarkmodeButton';
 
 export default function Header() {
   const [isLoginModalOpen, setIsLoginModalOpen] = useState(false);
   const [isUserInfoModalOpen, setIsUserInfoModalOpen] = useState(false);
   const [isSidebarOpen, setIsSidebarOpen] = useAtom(isSidebarOpenAtom);
+
   const { data: session, status } = useSession();
+  const { theme, setTheme } = useTheme();
 
   const handleLoginModalClick = () => {
     setIsLoginModalOpen(!isLoginModalOpen);
@@ -28,14 +32,14 @@ export default function Header() {
   return (
     <header
       className={clsx(
-        'h-[60px] flex items-center justify-between px-[16px] border-b border-blue-100 shadow-xs shadow-blue-100',
-        'max-md:px-[12px]'
+        'h-[60px] flex items-center justify-between px-[16px] border-b border-blue-100 shadow-2xs shadow-blue-100',
+        'max-md:px-[12px] dark:border-blue-200 dark:shadow-2xs dark:shadow-blue-400'
       )}
     >
       <div className='flex gap-[10px] max-md:gap-[4px]'>
         {!isSidebarOpen && (
           <button
-            className='p-1 hover:bg-gray-200 hover:rounded-[6px]'
+            className='p-1 hover:bg-gray-200 hover:dark:bg-dark-500 hover:rounded-[6px]'
             onClick={() => setIsSidebarOpen(!isSidebarOpen)}
           >
             <RiMenu3Fill className='w-[24px] h-[24px]' />
@@ -52,25 +56,31 @@ export default function Header() {
         </Link>
       </div>
 
-      {status === 'loading' ? (
-        <div className='w-[34px] h-[34px] rounded-full bg-gray-200 animate-pulse mr-[4px]' />
-      ) : status === 'authenticated' ? (
-        <Image
-          src={session.user.image!}
-          alt='프로필 이미지'
-          width={34}
-          height={34}
-          onClick={handleUserInfoModalClick}
-          className='rounded-full cursor-pointer mr-[4px]'
-        />
-      ) : (
-        <button
-          className='blue-btn mr-[4px] max-md:mr-0'
-          onClick={handleLoginModalClick}
-        >
-          로그인
+      <div className='flex items-center gap-[20px]'>
+        <button onClick={() => setTheme(theme === 'dark' ? 'light' : 'dark')}>
+          <DarkmodeButton />
         </button>
-      )}
+
+        {status === 'loading' ? (
+          <div className='w-[34px] h-[34px] rounded-full bg-gray-200 animate-pulse mr-[4px]' />
+        ) : status === 'authenticated' ? (
+          <Image
+            src={session.user.image!}
+            alt='프로필 이미지'
+            width={36}
+            height={36}
+            onClick={handleUserInfoModalClick}
+            className='rounded-full cursor-pointer mr-[4px]'
+          />
+        ) : (
+          <button
+            className='blue-btn py-[5px] mr-[4px] max-md:mr-0'
+            onClick={handleLoginModalClick}
+          >
+            로그인
+          </button>
+        )}
+      </div>
 
       {isLoginModalOpen && (
         <LoginModal isOpen={isLoginModalOpen} onClose={handleLoginModalClick} />

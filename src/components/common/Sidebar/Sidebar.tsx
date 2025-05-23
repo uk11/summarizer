@@ -83,7 +83,8 @@ export default function Sidebar() {
   return (
     <div
       className={clsx(
-        'fixed h-screen overflow-hidden bg-[#f8f8f8] duration-600 max-md:shadow-neutral-300 max-md:shadow-r z-[10]',
+        'fixed h-screen overflow-hidden bg-[#f8f8f8] duration-600 max-md:shadow-r z-[10]',
+        'dark:bg-dark-200 dark:text-white-100 max-md:shadow-dark-r',
         isSidebarOpen ? 'w-[260px] max-md:w-[75vw]' : 'w-0'
       )}
       ref={targetRef}
@@ -91,14 +92,33 @@ export default function Sidebar() {
       <div className='w-[260px] flex flex-col h-screen max-md:w-[75vw]'>
         <div className='h-[60px] flex items-center justify-between pl-[12px] pr-[16px] '>
           <button
-            className='p-[4px] hover:bg-gray-200 hover:rounded-[6px]'
+            className='p-[4px] hover:bg-gray-200 hover:rounded-[6px] hover:dark:bg-dark-400'
             onClick={() => setIsSidebarOpen(false)}
           >
-            <RiMenu3Fill className='w-[24px] h-[24px] cursor-pointer text-[#555555]' />
+            <RiMenu3Fill className='w-[24px] h-[24px] cursor-pointer' />
           </button>
 
+          {summaries?.data.length !== 0 && (
+            <button
+              className='p-[4px] hover:bg-gray-200 hover:rounded-[6px] hover:dark:bg-dark-400'
+              onClick={() => {
+                if (isMobile) {
+                  setIsSidebarOpen(false);
+                }
+                router.push('/');
+              }}
+            >
+              <RiStickyNoteAddLine className='w-[24px] h-[24px] cursor-pointer' />
+            </button>
+          )}
+        </div>
+
+        {summaries?.data.length === 0 && (
           <button
-            className='p-[4px] hover:bg-gray-200 hover:rounded-[6px]'
+            className={clsx(
+              'basic-btn flex justify-center border mx-[16px] py-[10px] rounded-[8px] mt-[10px] shadow-none bg-white',
+              'dark:bg-dark-400 dark:border-dark-400 hover:dark:bg-dark-500'
+            )}
             onClick={() => {
               if (isMobile) {
                 setIsSidebarOpen(false);
@@ -106,9 +126,9 @@ export default function Sidebar() {
               router.push('/');
             }}
           >
-            <RiStickyNoteAddLine className='w-[24px] h-[24px] cursor-pointer text-[#555555]' />
+            새 요약을 생성해 보세요!
           </button>
-        </div>
+        )}
 
         <div className='pl-[12px] pr-[6px] max-md:pr-[8px] flex-1 overflow-y-auto pb-[20px] scrollbar-stable'>
           <ul className='flex flex-col gap-[1px]'>
@@ -117,13 +137,16 @@ export default function Sidebar() {
                 <li key={data.id}>
                   <div
                     className={clsx(
-                      'px-[8px] flex justify-between items-center rounded-[8px] hover:bg-gray-200 hover:rounded-[8px] whitespace-nowrap gap-[6px]',
-                      params.id === data.id && 'bg-gray-300 rounded-[8px]',
-                      currentId === data.id && 'bg-gray-200'
+                      'px-[8px] flex justify-between items-center rounded-[8px] whitespace-nowrap gap-[6px]',
+                      'hover:bg-gray-200 hover:dark:bg-dark-400 hover:rounded-[8px]',
+                      params.id === data.id &&
+                        'bg-gray-300 dark:bg-dark-600 rounded-[8px]',
+                      currentId === data.id && 'bg-gray-200 dark:bg-dark-400'
                     )}
                   >
                     {isEditingId === data.id ? (
                       <input
+                        className='py-[10px] pl-[10px] pr-[16px] mx-[-8px] rounded-[8px] focus:outline-none bg-gray-200 dark:bg-dark-400 max-md:w-[110%] max-md:mr-[-14px]'
                         value={editedFileName}
                         onChange={(e) => setEditedFileName(e.target.value)}
                         onKeyDown={(e) => {
@@ -142,11 +165,10 @@ export default function Sidebar() {
                           setEditedFileName('');
                         }}
                         autoFocus
-                        className='py-[8px] pl-[10px] pr-[18px] mx-[-8px] rounded-[8px] focus:outline-none bg-gray-200'
                       />
                     ) : (
                       <Link
-                        className='w-full py-[8px] overflow-hidden'
+                        className='w-full py-[10px] overflow-hidden'
                         href={`/result/${data.id}`}
                         onClick={() =>
                           isMobile && setIsSidebarOpen(!isSidebarOpen)
@@ -168,7 +190,7 @@ export default function Sidebar() {
                       >
                         <RiMoreFill
                           className={clsx(
-                            'w-[24px] h-[24px] my-[8px] text-gray-600 hover:text-gray-900 hover:scale-110',
+                            'w-[24px] h-[24px] my-[8px] hover:text-gray-900 hover:dark:text-white hover:scale-110',
                             isEditingId === data.id && 'hidden'
                           )}
                         />
