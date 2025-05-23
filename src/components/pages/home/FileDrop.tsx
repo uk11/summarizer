@@ -60,9 +60,9 @@ export default function FileDrop({ onSwitch }: Props) {
     <div
       {...getRootProps()}
       className={clsx(
-        'flex flex-col justify-center items-center w-[800px] h-[300px] mt-[40px] rounded-[12px] cursor-pointer hover:bg-blue-50 p-[16px]',
-        'border-2 border-dashed border-blue-500 shadow-lg shadow-blue-100',
-        'max-md:w-full max-md:h-[250px]',
+        'flex flex-col justify-center items-center w-[800px] h-[300px] p-[16px] mt-[40px] rounded-[12px] cursor-pointer bg-white',
+        'border-2 border-dashed border-blue-500 shadow-lg shadow-blue-100 hover:bg-blue-50 text-black',
+        'max-md:w-full max-md:h-[250px] dark:shadow-md dark:shadow-blue-300',
         isDragActive && 'bg-blue-50'
       )}
     >

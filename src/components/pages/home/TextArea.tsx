@@ -19,15 +19,15 @@ export default function TextArea({ onSwitch }: Props) {
   return (
     <div
       className={clsx(
-        'flex flex-col justify-center items-center w-[800px] h-[300px] mt-[40px] rounded-[12px] p-[16px]',
-        'border-2 border-blue-300 shadow-lg shadow-blue-100',
-        'max-md:w-full max-md:h-[250px]'
+        'flex flex-col justify-center items-center w-[800px] h-[300px] mt-[40px] rounded-[12px] p-[16px] bg-white',
+        'border-2 border-blue-300 shadow-lg shadow-blue-100 text-black',
+        'max-md:w-full max-md:h-[250px] dark:shadow-md dark:shadow-blue-300'
       )}
     >
       <textarea
         ref={textareaRef}
         className='w-full h-full resize-none outline-none'
-        placeholder='요약 내용을 입력해주세요.'
+        placeholder='요약할 내용을 입력해 주세요.'
       />
 
       <div className='flex justify-between w-full mt-[10px]'>
@@ -40,7 +40,7 @@ export default function TextArea({ onSwitch }: Props) {
           onClick={() => {
             if (textareaRef.current?.value) {
               textMutate(textareaRef.current.value);
-            } else showToast('요약 내용을 입력해 주세요.', 'error');
+            } else showToast('요약할 내용을 입력해 주세요.', 'error');
           }}
         >
           요약하기
