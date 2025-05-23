@@ -102,6 +102,7 @@ export default function SummaryDropdown({
     <div
       className={clsx(
         'fixed top-0 left-0 p-[8px] w-max border bg-white rounded-[8px] z-50 ml-[100px]',
+        'dark-mode dark-modal-soft dark:border-none',
         (isDeleteModalOpen || isSaveModalOpen) && 'hidden'
       )}
       ref={(node) => {
@@ -114,7 +115,7 @@ export default function SummaryDropdown({
     >
       <div>
         <button
-          className='w-full flex items-center px-[8px] py-[6px] gap-[10px] hover:bg-gray-100 hover:rounded-[8px]'
+          className='w-full flex items-center px-[8px] py-[6px] gap-[10px] hover:bg-gray-100 hover:rounded-[8px] hover:dark:bg-dark-500'
           onClick={onEdit}
         >
           <RiEdit2Line className='w-[20px] h-[20px]' />
@@ -122,7 +123,7 @@ export default function SummaryDropdown({
         </button>
 
         <button
-          className='w-full flex items-center px-[8px] py-[6px] gap-[10px] hover:bg-gray-100 hover:rounded-[8px]'
+          className='w-full flex items-center px-[8px] py-[6px] gap-[10px] hover:bg-gray-100 hover:rounded-[8px] hover:dark:bg-dark-500'
           onClick={() => {
             if (status === 'unauthenticated') {
               setCurrentId(null);
@@ -135,7 +136,7 @@ export default function SummaryDropdown({
         </button>
 
         <button
-          className='w-full flex items-center px-[8px] py-[6px] gap-[10px] text-red-500 hover:bg-red-50 hover:rounded-[8px]'
+          className='w-full flex items-center px-[8px] py-[6px] gap-[10px] text-red-500 hover:bg-red-50 hover:rounded-[8px] hover:dark:bg-dark-500'
           onClick={() => setIsDeleteModalOpen(!isDeleteModalOpen)}
         >
           <RiDeleteBinLine className='w-[20px] h-[20px]' />
