@@ -7,6 +7,7 @@ const nextConfig: NextConfig = {
       'lh3.googleusercontent.com',
       'img1.kakaocdn.net',
       't1.kakaocdn.net',
+      'ssl.pstatic.net',
     ],
   },
 };
