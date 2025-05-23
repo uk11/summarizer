@@ -1,13 +1,27 @@
 @import 'tailwindcss';
+@custom-variant dark (&:where(.dark, .dark *));
 
 @theme {
-  --color-primary: #555555;
   --font-pretendard: 'Pretendard';
+  --color-dark-100: #2b2b2b;
+  --color-dark-200: #353535;
+  --color-dark-300: #3f3f3f;
+  --color-dark-400: #494949;
+  --color-dark-500: #535353;
+  --color-dark-600: #5d5d5d;
+  --color-dark-700: #676767;
+  --color-dark-800: #717171;
+  --color-dark-900: #7b7b7b;
+  --color-white-100: #ffffffcf;
 }
 
 @layer base {
   button {
     cursor: pointer;
+  }
+
+  html.dark {
+    @apply dark:bg-dark-100 dark:text-white-100;
   }
 }
 
@@ -32,20 +46,39 @@
     .max-md\:shadow-r {
       box-shadow: 50px 0 100px 0px rgba(0, 0, 0, 0.25);
     }
+
+    .dark .max-md\:shadow-r {
+      box-shadow: 50px 0 100px 0px rgba(60, 60, 60, 0.75);
+    }
+  }
+
+  .dark-mode {
+    @apply dark:bg-dark-200 dark:text-white-100;
+  }
+
+  .dark-modal-soft {
+    @apply dark:shadow-md dark:shadow-[#1a1a1a];
+  }
+
+  .dark-modal-deep {
+    @apply dark:shadow-md dark:shadow-[#000000];
   }
 }
 
 @layer components {
   .basic-btn {
-    @apply border border-gray-300 px-[12px] py-[2px] rounded-[6px] hover:bg-gray-100 shadow-gray-200 shadow-md whitespace-nowrap;
+    @apply border border-gray-300 px-[12px] py-[2px] rounded-[6px]
+     hover:bg-gray-100 whitespace-nowrap shadow-gray-200 shadow-md dark:shadow-none;
   }
 
   .basic-red-btn {
-    @apply border border-red-500 bg-red-500 text-white px-[12px] py-[2px] rounded-[6px] hover:bg-red-400 hover:border-red-400 shadow-red-200 shadow-md whitespace-nowrap;
+    @apply border border-red-500 bg-red-500 text-white px-[12px] py-[2px] rounded-[6px] 
+    hover:bg-red-400 hover:border-red-400 whitespace-nowrap shadow-red-200 shadow-md dark:shadow-none;
   }
 
   .blue-btn {
-    @apply border border-blue-500 bg-blue-500 text-white px-[12px] py-[3px] rounded-[6px] hover:bg-blue-400 hover:border-blue-400 shadow-blue-200 shadow-md whitespace-nowrap;
+    @apply border border-blue-500 bg-blue-500 text-white px-[12px] py-[2px] rounded-[6px]
+     hover:bg-blue-400 hover:border-blue-400 whitespace-nowrap shadow-blue-200 shadow-md dark:shadow-none;
   }
 }
 
@@ -94,6 +127,10 @@
 
 ::-webkit-scrollbar-thumb:hover {
   background-color: rgba(0, 0, 0, 0.3);
+}
+
+.dark ::-webkit-scrollbar-thumb {
+  background-color: rgba(255, 255, 255, 0.3);
 }
 
 @media (max-width: 768px) {
