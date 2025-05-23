@@ -1,4 +1,5 @@
 import { useOnClickOutside } from '@/hooks/useOutsideClick';
+import clsx from 'clsx';
 import { createPortal } from 'react-dom';
 
 type Props = {
@@ -23,7 +24,10 @@ export default function SaveModal({
   return createPortal(
     <div className='fixed inset-0 bg-black/40 flex justify-center items-center z-[20]'>
       <div
-        className='bg-white flex justify-center flex-col px-[20px] py-[20px] rounded-[10px] max-md:w-full max-md:mx-[20px]'
+        className={clsx(
+          'bg-white flex justify-center flex-col px-[20px] py-[20px] rounded-[10px]',
+          'max-md:w-full max-md:mx-[20px] dark-mode dark-modal-deep'
+        )}
         ref={targetRef}
       >
         <div className='mb-[10px]'>
@@ -35,7 +39,10 @@ export default function SaveModal({
         </div>
 
         <div className='flex justify-end w-full gap-[10px]'>
-          <button className='basic-btn' onClick={onClose}>
+          <button
+            className='basic-btn hover:dark:bg-dark-500'
+            onClick={onClose}
+          >
             취소
           </button>
           <button className='blue-btn' onClick={onSave}>

@@ -13,6 +13,7 @@ export default function XSvg() {
         strokeWidth='1.5'
         strokeLinecap='round'
         strokeLinejoin='round'
+        className='dark:stroke-white'
       />
       <path
         d='M7 7L17 17'
@@ -20,6 +21,7 @@ export default function XSvg() {
         strokeWidth='1.5'
         strokeLinecap='round'
         strokeLinejoin='round'
+        className='dark:stroke-white'
       />
     </svg>
   );
