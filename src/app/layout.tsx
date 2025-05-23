@@ -6,6 +6,7 @@ import AuthProvider from '@/Providers/AuthProvier';
 import QueryProvider from '@/Providers/QueryProvider';
 import ClientLayout from '@/components/common/ClientLayout';
 import localFont from 'next/font/local';
+import DarkModeProvider from '@/Providers/DarkModeProvider';
 
 export const metadata: Metadata = {
   title: 'Summarizer',
@@ -25,15 +26,21 @@ export default async function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang='ko' className={`${pretendard.variable} font-pretendard`}>
+    <html
+      lang='ko'
+      className={`${pretendard.variable} font-pretendard`}
+      suppressHydrationWarning
+    >
       <body>
         <QueryProvider>
           <AuthProvider>
-            <Sidebar />
-            <ClientLayout>
-              <Header />
-              {children}
-            </ClientLayout>
+            <DarkModeProvider>
+              <Sidebar />
+              <ClientLayout>
+                <Header />
+                {children}
+              </ClientLayout>
+            </DarkModeProvider>
           </AuthProvider>
         </QueryProvider>
       </body>
