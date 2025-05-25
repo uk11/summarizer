@@ -105,10 +105,10 @@ export default function UserInfoModal({ isOpen, onClose }: Props) {
                     </button>
                   </div>
 
-                  <div className='flex flex-1 justify-between items-center'>
+                  <div className='flex flex-1 justify-between items-center whitespace-nowrap'>
                     <div>{formatDate(data.createdAt, 'YY년 MM월 DD일')}</div>
                     <button
-                      className='mr-[10px] text-red-500 hover:text-red-600 hover:dark:text-red-400'
+                      className='mr-[10px] text-red-500 hover:text-red-600 hover:dark:text-red-400 whitespace-nowrap'
                       onClick={() => {
                         setCurrentId(data.id);
                       }}
