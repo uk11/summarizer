@@ -168,7 +168,7 @@ export default function Sidebar() {
                       />
                     ) : (
                       <Link
-                        className='w-full py-[10px] overflow-hidden'
+                        className='w-full py-[10px] overflow-hidden font-medium '
                         href={`/result/${data.id}`}
                         onClick={() =>
                           isMobile && setIsSidebarOpen(!isSidebarOpen)

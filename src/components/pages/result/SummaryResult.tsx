@@ -10,11 +10,11 @@ export default function SummaryResult({ summary }: Props) {
   return (
     <div
       className={clsx(
-        'border p-[16px] flex-[4] md:overflow-y-auto border-gray-300 rounded-[8px] whitespace-pre-line',
+        'border p-[16px] flex-[4] md:overflow-y-auto border-gray-300 rounded-[8px] whitespace-pre-wrap',
         'shadow-sm shadow-gray-300'
       )}
     >
-      <div className='text-[20px] font-bold mb-[8px] break-all'>
+      <div className='text-[20px] font-bold mb-[8px] break-all dark:text-white'>
         {summary.fileName}
       </div>
 

@@ -115,7 +115,9 @@ export default function SummaryChat({ summary }: Props) {
       ref={scrollRef}
     >
       <div className='flex-1'>
-        <div className='text-[20px] font-bold mb-[2px]'>채팅</div>
+        <div className='text-[20px] dark:text-white font-bold mb-[2px]'>
+          채팅
+        </div>
 
         {chatMessages &&
           chatMessages.map((msg) => (
