@@ -33,7 +33,7 @@ export default function Header() {
     <header
       className={clsx(
         'h-[60px] flex items-center justify-between px-[16px] border-b border-blue-100 shadow-2xs shadow-blue-100',
-        'max-md:px-[12px] dark:border-blue-200 dark:shadow-2xs dark:shadow-blue-400'
+        'max-md:px-[12px] dark:border-blue-300 dark:shadow-none'
       )}
     >
       <div className='flex gap-[10px] max-md:gap-[4px]'>
