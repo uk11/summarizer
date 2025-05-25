@@ -7,6 +7,7 @@ import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import useBottomScroll from '@/hooks/useBottomScroll';
+import { useToast } from '@/hooks/useToast';
 
 type Props = {
   summary: Summary;
@@ -22,6 +23,7 @@ export default function SummaryChat({ summary }: Props) {
   const [questionInput, setQuestionInput] = useState('');
   const router = useRouter();
   const queryClient = useQueryClient();
+  const { showToast } = useToast();
 
   const { data: chatMessages } = useQuery({
     queryKey: ['summaryChat', summary.id],
@@ -152,12 +154,13 @@ export default function SummaryChat({ summary }: Props) {
 
           <button
             className='basic-btn hover:dark:bg-dark-500'
-            onClick={() =>
+            onClick={() => {
               cancleSaveMutate({
                 summaryId: summary.id,
                 isSaved: summary.isSaved,
-              })
-            }
+              });
+              showToast('저장이 취소되었습니다.', 'success');
+            }}
           >
             저장 취소
           </button>
@@ -170,7 +173,7 @@ export default function SummaryChat({ summary }: Props) {
             onChange={(e) => setQuestionInput(e.target.value)}
             onKeyDown={(e) => e.key === 'Enter' && handleSubmitQuestion()}
             className={clsx(
-              'flex-1 border rounded-[6px] p-[8px] border-gray-400 placeholder:text-gray-400 bg-white text-black focus:outline-none',
+              'flex-1 min-w-0 border rounded-[6px] p-[8px] border-gray-400 placeholder:text-gray-400 bg-white text-black focus:outline-none',
               'shadow-md shadow-gray-200 dark:shadow-none'
             )}
             placeholder='무엇이든 물어보세요.'
