@@ -3,6 +3,7 @@ name: Deploy
 on:
   push:
     branches: [main]
+  workflow_dispatch:
 
 jobs:
   deploy:
@@ -12,7 +13,7 @@ jobs:
       - name: Checkout repo
         uses: actions/checkout@v4
 
-      - name: Get GitHub Runner IP
+      - name: Get GitHub Actions Runner IP
         id: ip
         run: |
           IP=$(curl -s https://checkip.amazonaws.com)
@@ -25,18 +26,18 @@ jobs:
           aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           aws-region: ${{ secrets.AWS_REGION }}
 
-      - name: Add temporary SSH rule
+      - name: Add temp SSH rule
         run: |
           aws ec2 authorize-security-group-ingress \
             --group-id ${{ secrets.SECURITY_GROUP_ID }} \
             --protocol tcp --port 22 --cidr $RUNNER_IP/32
 
-      - name: Setup SSH Key
+      - name: Create SSH Key
         run: |
           echo "${{ secrets.EC2_SSH_KEY }}" | base64 -d > private_key.pem
           chmod 600 private_key.pem
 
-      - name: SSH to EC2 and Deploy
+      - name: EC2 access and deploy
         run: |
           ssh -o StrictHostKeyChecking=no -i private_key.pem ${{ secrets.EC2_USER }}@${{ secrets.EC2_HOST }} << 'EOF'
             cd ~/summarizer
@@ -45,7 +46,7 @@ jobs:
             docker-compose up -d --build
           EOF
 
-      - name: Remove temporary SSH rule
+      - name: Remove temp SSH rule
         if: always()
         run: |
           aws ec2 revoke-security-group-ingress \
