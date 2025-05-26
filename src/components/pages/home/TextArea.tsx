@@ -24,7 +24,10 @@ export default function TextArea({ onSwitch }: Props) {
       const diff = window.innerHeight - viewport.height;
       if (diff > 100) {
         setTimeout(() => {
-          textareaRef.current?.scrollIntoView({ behavior: 'smooth' });
+          textareaRef.current?.scrollIntoView({
+            behavior: 'smooth',
+            block: 'center',
+          });
         }, 100);
       }
       viewport.removeEventListener('resize', handleResize);
