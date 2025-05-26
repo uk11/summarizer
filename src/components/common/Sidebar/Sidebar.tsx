@@ -83,8 +83,8 @@ export default function Sidebar() {
   return (
     <div
       className={clsx(
-        'fixed h-screen overflow-hidden bg-[#f8f8f8] duration-600 max-md:shadow-r z-[10]',
-        'dark:bg-dark-200 dark:text-white-100 max-md:shadow-dark-r',
+        'fixed h-screen overflow-hidden bg-[#f8f8f8] duration-600 z-[10]',
+        'dark:bg-dark-200 dark:text-white-100',
         isSidebarOpen ? 'w-[260px] max-md:w-[75vw]' : 'w-0'
       )}
       ref={targetRef}
@@ -116,8 +116,8 @@ export default function Sidebar() {
         {summaries?.data.length === 0 && (
           <button
             className={clsx(
-              'basic-btn flex justify-center border mx-[16px] py-[10px] rounded-[8px] mt-[10px] shadow-none bg-white',
-              'dark:bg-dark-400 dark:border-dark-400 hover:dark:bg-dark-500'
+              'flex mx-[12px] px-[8px] py-[10px] mt-[10px] rounded-[8px] hover:bg-gray-300',
+              'dark:bg-inherit hover:dark:bg-dark-400'
             )}
             onClick={() => {
               if (isMobile) {
@@ -168,7 +168,7 @@ export default function Sidebar() {
                       />
                     ) : (
                       <Link
-                        className='w-full py-[10px] overflow-hidden font-medium '
+                        className='w-full py-[10px] overflow-hidden font-semibold'
                         href={`/result/${data.id}`}
                         onClick={() =>
                           isMobile && setIsSidebarOpen(!isSidebarOpen)

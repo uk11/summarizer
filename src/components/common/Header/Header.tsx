@@ -36,7 +36,7 @@ export default function Header() {
         'max-md:px-[12px] dark:border-blue-300 dark:shadow-none'
       )}
     >
-      <div className='flex gap-[10px] max-md:gap-[4px]'>
+      <div className='flex gap-[10px] max-md:gap-[6px]'>
         {!isSidebarOpen && (
           <button
             className='p-1 hover:bg-gray-200 hover:dark:bg-dark-500 hover:rounded-[6px]'
@@ -56,7 +56,7 @@ export default function Header() {
         </Link>
       </div>
 
-      <div className='flex items-center gap-[20px]'>
+      <div className='flex items-center gap-[20px] max-md:gap-[14px]'>
         <button onClick={() => setTheme(theme === 'dark' ? 'light' : 'dark')}>
           <DarkmodeButton />
         </button>
