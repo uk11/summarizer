@@ -16,10 +16,27 @@ export default function TextArea({ onSwitch }: Props) {
   const { mutate: textMutate, isPending: isTextPending } =
     useUpload(uploadText);
 
+  const handleFocus = () => {
+    const viewport = window.visualViewport;
+    if (!viewport) return;
+
+    const handleResize = () => {
+      const diff = window.innerHeight - viewport.height;
+      if (diff > 100) {
+        setTimeout(() => {
+          textareaRef.current?.scrollIntoView({ behavior: 'smooth' });
+        }, 100);
+      }
+      viewport.removeEventListener('resize', handleResize);
+    };
+
+    viewport.addEventListener('resize', handleResize);
+  };
+
   return (
     <div
       className={clsx(
-        'flex flex-col justify-center items-center w-[800px] h-[300px] mt-[40px] rounded-[12px] p-[16px] bg-white',
+        'flex flex-col justify-center items-center w-[800px] h-[300px] rounded-[12px] p-[16px] bg-white',
         'border-2 border-blue-300 shadow-lg shadow-blue-100 text-black',
         'max-md:w-full max-md:h-[250px] dark:shadow-md dark:shadow-blue-300'
       )}
@@ -28,6 +45,7 @@ export default function TextArea({ onSwitch }: Props) {
         ref={textareaRef}
         className='w-full h-full resize-none outline-none'
         placeholder='요약할 내용을 입력해 주세요.'
+        onFocus={handleFocus}
       />
 
       <div className='flex justify-between w-full mt-[10px]'>
