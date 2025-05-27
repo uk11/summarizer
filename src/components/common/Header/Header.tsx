@@ -49,7 +49,7 @@ export default function Header() {
           href='/'
           className={clsx(
             'text-[24px] font-semibold',
-            isSidebarOpen && 'max-md:ml-[36px]'
+            isSidebarOpen && 'max-md:ml-[38px]'
           )}
         >
           Summarizer

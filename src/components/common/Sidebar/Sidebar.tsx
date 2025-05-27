@@ -116,7 +116,7 @@ export default function Sidebar() {
         {summaries?.data.length === 0 && (
           <button
             className={clsx(
-              'flex mx-[12px] px-[8px] py-[10px] mt-[10px] rounded-[8px] hover:bg-gray-300',
+              'flex mx-[12px] px-[8px] py-[10px] rounded-[8px] hover:bg-gray-300',
               'dark:bg-inherit hover:dark:bg-dark-400'
             )}
             onClick={() => {
