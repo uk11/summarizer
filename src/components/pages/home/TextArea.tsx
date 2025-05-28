@@ -3,7 +3,7 @@ import { uploadText } from '@/fetch';
 import { useUpload } from '@/hooks/query/useUpload';
 import { useToast } from '@/hooks/useToast';
 import clsx from 'clsx';
-import { useRef } from 'react';
+import { useRef, useState } from 'react';
 
 type Props = {
   onSwitch: () => void;
@@ -11,6 +11,8 @@ type Props = {
 
 export default function TextArea({ onSwitch }: Props) {
   const textareaRef = useRef<HTMLTextAreaElement | null>(null);
+  const [text, setText] = useState('');
+
   const { showToast } = useToast();
 
   const { mutate: textMutate, isPending: isTextPending } =
@@ -49,6 +51,8 @@ export default function TextArea({ onSwitch }: Props) {
         className='w-full h-full resize-none outline-none'
         placeholder='요약할 내용을 입력해 주세요.'
         onFocus={handleFocus}
+        value={text}
+        onChange={(e) => setText(e.target.value.slice(0, 1000))}
       />
 
       <div className='flex justify-between w-full mt-[10px]'>
@@ -56,16 +60,20 @@ export default function TextArea({ onSwitch }: Props) {
           파일 업로드하기
         </button>
 
-        <button
-          className='blue-btn'
-          onClick={() => {
-            if (textareaRef.current?.value) {
-              textMutate(textareaRef.current.value);
-            } else showToast('요약할 내용을 입력해 주세요.', 'error');
-          }}
-        >
-          요약하기
-        </button>
+        <div className='flex items-center gap-[20px] max-md:gap-[10px] text-[#555555]'>
+          {`${text.length} / 1000`}
+
+          <button
+            className='blue-btn'
+            onClick={() => {
+              if (!text)
+                return showToast('요약할 내용을 입력해 주세요.', 'error');
+              textMutate(text);
+            }}
+          >
+            요약하기
+          </button>
+        </div>
       </div>
 
       {isTextPending && <Spinner />}
