@@ -34,7 +34,7 @@ export default function LoginModal({ isOpen, onClose }: Props) {
         ref={targetRef}
       >
         <div className='relative w-full'>
-          <h1 className='flex justify-center my-[30px] text-[24px] font-semibold'>
+          <h1 className='flex justify-center my-[30px] text-[28px] font-semibold'>
             Summarizer
           </h1>
 

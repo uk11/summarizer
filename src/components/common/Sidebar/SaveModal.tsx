@@ -35,6 +35,7 @@ export default function SaveModal({
             <span className='font-semibold'>{fileName}</span> 파일을
             저장하시겠습니까?
           </p>
+
           <p>저장 목록은 계정 정보에서 확인할 수 있습니다. </p>
         </div>
 

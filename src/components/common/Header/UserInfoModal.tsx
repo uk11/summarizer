@@ -63,8 +63,8 @@ export default function UserInfoModal({ isOpen, onClose }: Props) {
         )}
         ref={targetRef}
       >
-        <div className='mb-[26px]'>
-          <div className='w-full mb-[14px] flex justify-between items-center'>
+        <div className='mb-[30px]'>
+          <div className='w-full mb-[12px] flex justify-between items-center'>
             <h2 className='font-semibold text-[18px]'>계정 정보</h2>
             <button className='-translate-y-[6px]' onClick={onClose}>
               <XSvg />
@@ -83,7 +83,7 @@ export default function UserInfoModal({ isOpen, onClose }: Props) {
         </div>
 
         <div>
-          <h2 className='font-semibold text-[18px] mb-[14px]'>
+          <h2 className='font-semibold text-[18px] mb-[12px]'>
             저장된 요약 및 채팅
           </h2>
 
