@@ -1,4 +1,5 @@
 import Upload from './Upload';
+import { RiErrorWarningLine } from 'react-icons/ri';
 
 export default function HomeClient() {
   return (
@@ -15,6 +16,15 @@ export default function HomeClient() {
       </div>
 
       <Upload />
+
+      <div className='flex gap-[4px] mt-[20px] text-gray-400 dark:text-white-100 md:w-[800px]'>
+        <RiErrorWarningLine className='shrink-0 mt-[2px]' />
+
+        <p className='text-[14px]'>
+          현재 gpt-3.5-turbo 모델을 사용하고 있기 때문에 요약 및 답변 내용이
+          부정확할 수 있습니다.
+        </p>
+      </div>
     </div>
   );
 }
