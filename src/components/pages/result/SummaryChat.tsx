@@ -109,7 +109,7 @@ export default function SummaryChat({ summary }: Props) {
   return (
     <div
       className={clsx(
-        'flex flex-col flex-[6] p-[16px] pr-[12px] border border-gray-300 rounded-[8px] md:overflow-y-auto',
+        'flex flex-col flex-[6] p-[16px] pr-[12px] border border-gray-300 rounded-[8px] md:overflow-y-auto scrollbar-stable',
         'shadow-sm shadow-gray-300'
       )}
       ref={scrollRef}

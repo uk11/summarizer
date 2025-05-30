@@ -42,7 +42,7 @@ export default function ResultClient({ summary }: Props) {
 
   return (
     <div
-      className='p-[16px] flex gap-[10px] h-[calc(100vh-60px)] text-primary max-md:flex-col overflow-y-auto'
+      className='p-[16px] pr-[12px] flex gap-[10px] h-[calc(100vh-60px)] text-primary max-md:flex-col overflow-y-auto scrollbar-stable'
       ref={scrollRef}
     >
       <SummaryResult summary={summary} />
