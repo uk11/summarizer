@@ -168,17 +168,24 @@ export default function SummaryChat({ summary }: Props) {
           </button>
         </div>
       ) : (
-        <div className='flex items-center gap-[8px] mt-[8px]'>
-          <input
-            type='text'
+        <div className='flex items-end gap-[8px] mt-[8px]'>
+          <textarea
+            rows={1}
             value={questionInput}
             onChange={(e) => setQuestionInput(e.target.value)}
             onKeyDown={(e) => e.key === 'Enter' && handleSubmitQuestion()}
+            placeholder='무엇이든 물어보세요.'
             className={clsx(
               'flex-1 min-w-0 border rounded-[6px] p-[8px] border-gray-400 placeholder:text-gray-400 bg-white text-black focus:outline-none',
-              'shadow-md shadow-gray-200 dark:shadow-none'
+              'max-h-[100px] resize-none shadow-md shadow-gray-200 dark:shadow-none min-h-[42px]'
             )}
-            placeholder='무엇이든 물어보세요.'
+            onInput={(e) => {
+              const target = e.currentTarget;
+              target.style.height = 'auto';
+              target.style.overflowY =
+                target.scrollHeight > 100 ? 'auto' : 'hidden';
+              target.style.height = `${target.scrollHeight}px`;
+            }}
           />
 
           <button

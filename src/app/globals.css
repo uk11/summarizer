@@ -130,7 +130,7 @@
 }
 
 .dark ::-webkit-scrollbar-thumb {
-  background-color: rgba(255, 255, 255, 0.3);
+  background-color: rgba(120, 120, 120, 0.6);
 }
 
 @media (max-width: 768px) {
