@@ -109,12 +109,14 @@ export default function SummaryChat({ summary }: Props) {
   return (
     <div
       className={clsx(
-        'flex flex-col flex-[6] p-[16px] pr-[12px] border border-gray-300 rounded-[8px] md:overflow-y-auto scrollbar-stable',
+        'flex flex-col flex-[6] p-[16px] pr-0 border border-gray-300 rounded-[8px]',
         'shadow-sm shadow-gray-300'
       )}
-      ref={scrollRef}
     >
-      <div className='flex-1'>
+      <div
+        className='flex-1 md:overflow-y-auto scrollbar-stable'
+        ref={scrollRef}
+      >
         <div className='text-[20px] dark:text-white font-bold mb-[2px]'>
           채팅
         </div>
@@ -124,7 +126,7 @@ export default function SummaryChat({ summary }: Props) {
             <div
               key={msg.id}
               className={clsx(
-                'px-[8px] py-[6px] mb-[10px] rounded max-w-[80%] w-fit break-words whitespace-pre-wrap',
+                'px-[8px] py-[6px] mb-[10px] rounded max-w-[80%] w-fit break-words whitespace-pre-wrap mr-[10px]',
                 msg.role === 'user'
                   ? 'bg-gray-100 dark:bg-gray-200 text-black ml-auto'
                   : 'mr-auto'
@@ -168,7 +170,7 @@ export default function SummaryChat({ summary }: Props) {
           </button>
         </div>
       ) : (
-        <div className='flex items-end gap-[8px] mt-[8px]'>
+        <div className='flex items-end gap-[8px] mt-[8px] mr-[16px]'>
           <textarea
             rows={1}
             value={questionInput}
