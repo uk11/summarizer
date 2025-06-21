@@ -4,7 +4,7 @@ services:
     container_name: summarizer_postgres
     restart: always
     ports:
-      - '5432:5432'
+      - '${DB_PORT}:${DB_PORT}'
     volumes:
       - pgdata:/var/lib/postgresql/data
     env_file:
